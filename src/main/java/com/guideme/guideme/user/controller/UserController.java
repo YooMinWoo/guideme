@@ -1,6 +1,8 @@
 package com.guideme.guideme.user.controller;
 
 import com.guideme.guideme.global.dto.ApiResponse;
+import com.guideme.guideme.user.domain.Role;
+import com.guideme.guideme.user.dto.SignupDto;
 import com.guideme.guideme.user.dto.UserDto;
 import com.guideme.guideme.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +24,16 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody UserDto userDto) throws Exception {
-        userService.signup(userDto);
-        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("회원가입 성공!", userDto));
+    public ResponseEntity<?> userSignup(@RequestBody SignupDto signupDto) throws Exception {
+        signupDto.getUser().setRole(Role.ROLE_USER);
+        userService.userSignup(signupDto.getUser());
+        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("회원가입 성공!", null));
+    }
+
+    @PostMapping("/guide/signup")
+    public ResponseEntity<?> guideSignup(@RequestBody SignupDto signupDto) throws Exception {
+        signupDto.getUser().setRole(Role.ROLE_GUIDE);
+        userService.guideSignup(signupDto.getUser(), signupDto.getBusiness());
+        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("회원가입 성공!", null));
     }
 }
