@@ -1,6 +1,7 @@
 package com.guideme.guideme.user.domain;
 
 import com.guideme.guideme.global.entity.BaseEntity;
+import com.guideme.guideme.user.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -34,5 +35,16 @@ public class User extends BaseEntity {
         this.email = email;
         this.mobile = mobile;
         this.role = role;
+    }
+
+    public static User createUser(UserDto userDto){
+        return User.builder()
+                .username(userDto.getUsername())
+                .password(userDto.getPassword())
+                .email(userDto.getEmail())
+                .name(userDto.getName())
+                .mobile(userDto.getMobile())
+                .role(userDto.getRole())
+                .build();
     }
 }

@@ -29,7 +29,7 @@ public class CustomUserDetails implements UserDetails {
     // 토큰 기반 인증일 경우 null 반환
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return null;
     }
 
     @Override

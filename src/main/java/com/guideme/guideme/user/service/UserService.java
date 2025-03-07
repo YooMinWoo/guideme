@@ -3,14 +3,23 @@ package com.guideme.guideme.user.service;
 import com.guideme.guideme.business.domain.Business;
 import com.guideme.guideme.business.dto.BusinessDto;
 import com.guideme.guideme.business.service.BusinessService;
-import com.guideme.guideme.user.domain.Role;
-import com.guideme.guideme.user.dto.SignupDto;
+import com.guideme.guideme.global.exception.CustomException;
+import com.guideme.guideme.global.exception.UserNotFoundException;
+import com.guideme.guideme.global.exception.UserNotRegisteredException;
+import com.guideme.guideme.security.jwt.JwtUtil;
+import com.guideme.guideme.security.user.CustomUserDetails;
+import com.guideme.guideme.user.dto.TokenDto;
 import com.guideme.guideme.user.dto.UserDto;
 import com.guideme.guideme.user.domain.User;
 import com.guideme.guideme.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,10 +27,17 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BusinessService businessService;
+    private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
+
+    public Optional<User> findByUsername(String username){
+        return userRepository.findByUsername(username);
+    }
 
     public void userSignup(UserDto userDto) throws Exception {
         if(userRepository.findByUsername(userDto.getUsername()).isPresent()) throw new Exception("이미 존재하는 아이디입니다.");
-        User user = getUserEntity(userDto);
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        User user = User.createUser(userDto);
 
         userRepository.save(user);
     }
@@ -30,30 +46,23 @@ public class UserService {
     public void guideSignup(UserDto userDto, BusinessDto businessDto) throws Exception {
         if(userRepository.findByUsername(userDto.getUsername()).isPresent()) throw new Exception("이미 존재하는 아이디입니다.");
         if(businessService.findByRegistration_number(businessDto.getRegistrationNumber()).isPresent()) throw new Exception("이미 존재하는 사업자 등록번호입니다.");
-        User user = getUserEntity(userDto);
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        User user = User.createUser(userDto);
         userRepository.save(user);
 
         businessDto.setUserId(user.getId());
-        Business business = getBusinessEntity(businessDto);
+        Business business = Business.createBusiness(businessDto);
         businessService.save(business);
     }
 
-    public User getUserEntity(UserDto userDto){
-        return User.builder()
-                .username(userDto.getUsername())
-                .password(userDto.getPassword())
-                .email(userDto.getEmail())
-                .name(userDto.getName())
-                .mobile(userDto.getMobile())
-                .role(userDto.getRole())
-                .build();
-    }
+    public TokenDto login(UserDto userDto) {
+        String username = userDto.getUsername();
+        String password = userDto.getPassword();
 
-    public Business getBusinessEntity(BusinessDto businessDto){
-        return Business.builder()
-                .userId(businessDto.getUserId())
-                .tradeName(businessDto.getTradeName())
-                .registrationNumber(businessDto.getRegistrationNumber())
-                .build();
+        Optional<User> user = userRepository.findByUsername(username);
+        if(user.isEmpty()) throw new CustomException("존재하지 않는 아이디입니다.");
+        if(!passwordEncoder.matches(password, user.get().getPassword())) throw new CustomException("비밀번호가 일치하지 않습니다.");
+
+        return jwtUtil.generateToken(user.get());
     }
 }

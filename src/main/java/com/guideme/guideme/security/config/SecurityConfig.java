@@ -2,12 +2,9 @@ package com.guideme.guideme.security.config;
 
 import com.guideme.guideme.security.handler.CustomAccessDeniedHandler;
 import com.guideme.guideme.security.handler.CustomAuthenticationEntryPoint;
-import com.guideme.guideme.security.handler.CustomAuthenticationFailureHandler;
-import com.guideme.guideme.security.handler.CustomAuthenticationSuccessHandler;
 import com.guideme.guideme.security.jwt.JwtFilter;
 import com.guideme.guideme.security.jwt.JwtUtil;
-import com.guideme.guideme.security.jwt.LoginFilter;
-import com.guideme.guideme.security.service.CustomUserDetailsService;
+import com.guideme.guideme.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,12 +26,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomUserDetailsService customUserDetailsService;
+//    private final CustomUserDetailsService customUserDetailsService;
+//    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+//    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
-//    private final CustomOAuth2UserService customOAuth2UserService;
-    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
-    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+    //    private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
     private final CustomAccessDeniedHandler accessDeniedHandler;
 
@@ -59,6 +56,7 @@ public class SecurityConfig {
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
+//                .logout(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
 //                .oauth2Login(oauth -> oauth
 //                        .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
@@ -72,10 +70,11 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
-                .addFilterBefore(new JwtFilter(customUserDetailsService,jwtUtil), LoginFilter.class)
+                //로그인 필터 작동 이전에
+                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
 //                .addFilterBefore(new CustomLogoutFilter(jwtUtil), LogoutFilter.class)
                 //필터 추가 LoginFilter()는 인자를 받음 (AuthenticationManager() 메소드에 authenticationConfiguration 객체를 넣어야 함) 따라서 등록 필요
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil, customAuthenticationSuccessHandler,customAuthenticationFailureHandler), UsernamePasswordAuthenticationFilter.class)
+//                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil, customAuthenticationSuccessHandler,customAuthenticationFailureHandler), UsernamePasswordAuthenticationFilter.class)
 
                 .exceptionHandling(exception -> exception
                         .accessDeniedHandler(accessDeniedHandler)

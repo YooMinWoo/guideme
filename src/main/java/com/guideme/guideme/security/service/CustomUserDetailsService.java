@@ -1,5 +1,6 @@
 package com.guideme.guideme.security.service;
 
+import com.guideme.guideme.global.exception.CustomException;
 import com.guideme.guideme.security.user.CustomUserDetails;
 import com.guideme.guideme.user.domain.User;
 import com.guideme.guideme.user.repository.UserRepository;
@@ -23,6 +24,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         if(user.isPresent()){
             return new CustomUserDetails(user.get());
         }
-        return null;
+        throw new UsernameNotFoundException("없는 계정입니다.");
     }
 }

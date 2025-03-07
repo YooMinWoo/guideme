@@ -2,7 +2,7 @@ package com.guideme.guideme.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.guideme.guideme.global.dto.ApiResponse;
-import com.guideme.guideme.security.service.CustomUserDetailsService;
+import com.guideme.guideme.user.service.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -20,8 +20,9 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final CustomUserDetailsService customUserDetailsService;
+//    private final CustomUserDetailsService customUserDetailsService;
     private final JwtUtil jwtUtil;
+//    private final UserService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -46,10 +47,10 @@ public class JwtFilter extends OncePerRequestFilter {
                 throw new JwtException("유효하지 않은 토큰입니다.");
             }
             Authentication authentication = jwtUtil.getAuthentication(accessToken);
+//            Authentication authentication = userService.getAuthentication(accessToken);
 
             //세션에 사용자 등록
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
 
             filterChain.doFilter(request, response);
 
@@ -59,6 +60,9 @@ public class JwtFilter extends OncePerRequestFilter {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
         } catch(JwtException e){
             apiResponse = new ApiResponse<>(HttpStatus.UNAUTHORIZED.value(), "토큰에 에러가 발생했습니다.", null);
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        } catch(Exception e){
+            apiResponse = new ApiResponse<>(HttpStatus.UNAUTHORIZED.value(), "에러 발생", null);
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
         }
         response.setContentType("application/json;charset=UTF-8");

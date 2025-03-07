@@ -1,5 +1,6 @@
 package com.guideme.guideme.business.domain;
 
+import com.guideme.guideme.business.dto.BusinessDto;
 import com.guideme.guideme.global.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,5 +31,13 @@ public class Business extends BaseEntity {
         this.userId = userId;
         this.tradeName = tradeName;
         this.registrationNumber = registrationNumber;
+    }
+
+    public static Business createBusiness(BusinessDto businessDto){
+        return Business.builder()
+                .userId(businessDto.getUserId())
+                .tradeName(businessDto.getTradeName())
+                .registrationNumber(businessDto.getRegistrationNumber())
+                .build();
     }
 }
