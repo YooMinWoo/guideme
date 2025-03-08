@@ -44,7 +44,7 @@ public class JwtUtil {
 
     public Authentication getAuthentication(String token) throws Exception {
         UserDetails user = CustomUserDetailsService.loadUserByUsername(this.getUsername(token));
-        return new UsernamePasswordAuthenticationToken(user.getUsername(), "", user.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(user, "", user.getAuthorities());
     }
 
     public String getRole(String token) {
@@ -86,15 +86,4 @@ public class JwtUtil {
         return new TokenDto(accessToken, refreshToken);
     }
 
-    public String createJwt(String category, String username, String role, Long expiredMs) {
-
-        return Jwts.builder()
-                .claim("category", category)
-                .claim("username", username)
-                .claim("role", role)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiredMs))
-                .signWith(secretKey)
-                .compact();
-    }
 }

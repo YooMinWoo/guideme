@@ -47,7 +47,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 throw new JwtException("유효하지 않은 토큰입니다.");
             }
             Authentication authentication = jwtUtil.getAuthentication(accessToken);
-//            Authentication authentication = userService.getAuthentication(accessToken);
 
             //세션에 사용자 등록
             SecurityContextHolder.getContext().setAuthentication(authentication);

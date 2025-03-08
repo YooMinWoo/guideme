@@ -1,6 +1,7 @@
 package com.guideme.guideme.user.domain;
 
 import com.guideme.guideme.global.entity.BaseEntity;
+import com.guideme.guideme.user.dto.MyPageDto;
 import com.guideme.guideme.user.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -46,5 +47,15 @@ public class User extends BaseEntity {
                 .mobile(userDto.getMobile())
                 .role(userDto.getRole())
                 .build();
+    }
+
+    public static MyPageDto myPage(User user){
+        return MyPageDto.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .name(user.getName())
+                .mobile(user.getMobile())
+                .build();
+
     }
 }

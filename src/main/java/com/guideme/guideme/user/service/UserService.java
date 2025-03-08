@@ -34,8 +34,8 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    public void userSignup(UserDto userDto) throws Exception {
-        if(userRepository.findByUsername(userDto.getUsername()).isPresent()) throw new Exception("이미 존재하는 아이디입니다.");
+    public void userSignup(UserDto userDto) {
+        if(userRepository.findByUsername(userDto.getUsername()).isPresent()) throw new CustomException("이미 존재하는 아이디입니다.");
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User user = User.createUser(userDto);
 
@@ -43,9 +43,9 @@ public class UserService {
     }
 
     @Transactional
-    public void guideSignup(UserDto userDto, BusinessDto businessDto) throws Exception {
-        if(userRepository.findByUsername(userDto.getUsername()).isPresent()) throw new Exception("이미 존재하는 아이디입니다.");
-        if(businessService.findByRegistration_number(businessDto.getRegistrationNumber()).isPresent()) throw new Exception("이미 존재하는 사업자 등록번호입니다.");
+    public void guideSignup(UserDto userDto, BusinessDto businessDto) {
+        if(userRepository.findByUsername(userDto.getUsername()).isPresent()) throw new CustomException("이미 존재하는 아이디입니다.");
+        if(businessService.findByRegistration_number(businessDto.getRegistrationNumber()).isPresent()) throw new CustomException("이미 존재하는 사업자 등록번호입니다.");
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User user = User.createUser(userDto);
         userRepository.save(user);
