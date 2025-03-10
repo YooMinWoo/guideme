@@ -24,20 +24,18 @@ public class Business extends BaseEntity {
     private Long userId;
 
     private String tradeName;  // 상호명
+    private String businessMobile;  // 대표 전화번호
+    private String businessEmail;  // 대표 이메일
     private String registrationNumber; // 사업자 등록번호
+    private String information;  // 상세정보(소개글 등)
 
     @Builder
-    public Business(Long userId, String tradeName, String registrationNumber) {
+    public Business(Long userId, String tradeName, String businessMobile, String businessEmail, String registrationNumber, String information) {
         this.userId = userId;
         this.tradeName = tradeName;
+        this.businessMobile = businessMobile;
+        this.businessEmail = businessEmail;
         this.registrationNumber = registrationNumber;
-    }
-
-    public static Business createBusiness(BusinessDto businessDto){
-        return Business.builder()
-                .userId(businessDto.getUserId())
-                .tradeName(businessDto.getTradeName())
-                .registrationNumber(businessDto.getRegistrationNumber())
-                .build();
+        this.information = information;
     }
 }

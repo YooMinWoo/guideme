@@ -8,5 +8,6 @@ public class SignupDto {
 
     private UserDto user;
     private BusinessDto business;
+    private String adminCode;
 
 }

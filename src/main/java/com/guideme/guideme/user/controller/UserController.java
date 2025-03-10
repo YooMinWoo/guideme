@@ -8,6 +8,7 @@ import com.guideme.guideme.user.dto.MyPageDto;
 import com.guideme.guideme.user.dto.TokenDto;
 import com.guideme.guideme.user.dto.SignupDto;
 import com.guideme.guideme.user.dto.UserDto;
+import com.guideme.guideme.user.mapper.UserMapper;
 import com.guideme.guideme.user.service.UserService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +33,8 @@ public class UserController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/my")
     public ResponseEntity<?> my(@AuthenticationPrincipal CustomUserDetails customUserDetails){
-        MyPageDto MyPageDto = User.myPage(customUserDetails.getUser());
-        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("my!", MyPageDto));
+        MyPageDto myPageDto = UserMapper.toMyPageDto(customUserDetails.getUser());
+        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("my!", myPageDto));
     }
 
     @PostMapping("/signup")
@@ -47,6 +48,13 @@ public class UserController {
     public ResponseEntity<?> guideSignup(@RequestBody SignupDto signupDto) {
         signupDto.getUser().setRole(Role.ROLE_GUIDE);
         userService.guideSignup(signupDto.getUser(), signupDto.getBusiness());
+        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("회원가입 성공!", null));
+    }
+
+    @PostMapping("/admin/signup")
+    public ResponseEntity<?> adminSignup(@RequestBody SignupDto signupDto) {
+        signupDto.getUser().setRole(Role.ROLE_ADMIN);
+        userService.adminSignup(signupDto.getUser(), signupDto.getAdminCode());
         return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("회원가입 성공!", null));
     }
 

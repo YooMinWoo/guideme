@@ -38,24 +38,4 @@ public class User extends BaseEntity {
         this.role = role;
     }
 
-    public static User createUser(UserDto userDto){
-        return User.builder()
-                .username(userDto.getUsername())
-                .password(userDto.getPassword())
-                .email(userDto.getEmail())
-                .name(userDto.getName())
-                .mobile(userDto.getMobile())
-                .role(userDto.getRole())
-                .build();
-    }
-
-    public static MyPageDto myPage(User user){
-        return MyPageDto.builder()
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .name(user.getName())
-                .mobile(user.getMobile())
-                .build();
-
-    }
 }
