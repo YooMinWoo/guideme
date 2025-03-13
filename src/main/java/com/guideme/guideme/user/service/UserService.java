@@ -41,6 +41,7 @@ public class UserService {
     // 유저 회원가입
     public void userSignup(UserDto userDto) {
         if(userRepository.findByUsername(userDto.getUsername()).isPresent()) throw new CustomException("이미 존재하는 아이디입니다.");
+//        if(userRepository.findByNameAndResidentAndRole(userDto.getName(), userDto.getResident, userDto.getRole()).isPresent()) throw new CustomException("이미 가입된 회원입니다.");
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User user = UserMapper.toUserEntity(userDto);
 

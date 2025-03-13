@@ -12,17 +12,13 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostDto {
+public class PostDetailDto {
 
-    private Long post_id;
+    private Long post_detail_id;
 
     private Long user_id;
+    private Long post_id;
 
-    private String title;   // 제목
-    private String description; // 설명
-    private Status status; // 상태
-
-//    private int adultPrice;  // 대인 요금
-//    private int childPrice;  // 소인 요금
-//    private LocalDate postDate; // 날짜
+    private int price;  // 요금
+    private LocalDate postDate; // 날짜
 }
