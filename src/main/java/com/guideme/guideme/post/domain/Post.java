@@ -22,6 +22,8 @@ public class Post extends BaseEntity {
     private String title;   // 제목
     private String description; // 설명
 
+    private int defaultPrice;   // 기본 가격
+
     @Enumerated(EnumType.STRING)
     private Status status;    // 상태
 
@@ -57,10 +59,11 @@ public class Post extends BaseEntity {
 //    }
 
     @Builder
-    public Post(Long user_id, String title, String description, Status status) {
+    public Post(Long user_id, String title, String description, int defaultPrice, Status status) {
         this.user_id = user_id;
         this.title = title;
         this.description = description;
+        this.defaultPrice = defaultPrice;
         this.status = status;
     }
 }

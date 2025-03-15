@@ -22,6 +22,7 @@ public class PostMapper {
                 .user_id(postDto.getUser_id())
                 .title(postDto.getTitle())
                 .description(postDto.getDescription())
+                .defaultPrice(postDto.getDefaultPrice())
                 .status(postDto.getStatus())
                 .build();
     }
@@ -43,6 +44,7 @@ public class PostMapper {
                 .user_id(post.getUser_id())
                 .title(post.getTitle())
                 .description(post.getDescription())
+                .defaultPrice(post.getDefaultPrice())
                 .status(post.getStatus())
                 .build();
     }

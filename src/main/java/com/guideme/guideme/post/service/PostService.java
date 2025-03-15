@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,6 +40,7 @@ public class PostService {
         for(PostDetailDto dto : createPostDto.getPostDetailDto()){
             dto.setUser_id(post.getUser_id());
             dto.setPost_id(post.getId());
+            if(dto.getPrice() == 0) dto.setPrice(post.getDefaultPrice());
             PostDetail postDetail = PostMapper.toPostDetailEntity(dto);
             postDetailRepository.save(postDetail);
         }
@@ -65,15 +67,17 @@ public class PostService {
         return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
     }
 
+    @Transactional
     public void postDetail(PostDetailDto postDetailDto) {
         Optional<Post> post = postRepository.findById(postDetailDto.getPost_id());
         if(post.isEmpty()) throw new CustomException("에러 발생");
         if(post.get().getUser_id() != postDetailDto.getUser_id()) throw new CustomException("본인만 변경할 수 있습니다.");
 
-        if(postDetailDto.getPost_detail_id() == null) {
+        if(postDetailDto.getPrice() == 0) postDetailDto.setPrice(post.get().getDefaultPrice());
+        if(postDetailDto.getPost_detail_id() == null) { // 일자별 가격 등록
             PostDetail postDetail = PostMapper.toPostDetailEntity(postDetailDto);
             postDetailRepository.save(postDetail);
-        } else{
+        } else {     // 이미 값이 등록되어 있어서, 수정을 하는 경우
             Optional<PostDetail> postDetail = postDetailRepository.findById(postDetailDto.getPost_detail_id());
             if(postDetail.isEmpty()) throw new CustomException("에러 발생");
             postDetail.get().changePrice(postDetailDto.getPrice());
