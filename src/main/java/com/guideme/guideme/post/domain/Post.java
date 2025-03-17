@@ -67,3 +67,4 @@ public class Post extends BaseEntity {
         this.status = status;
     }
 }
+

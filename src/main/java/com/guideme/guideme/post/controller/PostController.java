@@ -3,7 +3,6 @@ package com.guideme.guideme.post.controller;
 import com.guideme.guideme.global.dto.ApiResponse;
 import com.guideme.guideme.post.domain.Status;
 import com.guideme.guideme.post.dto.CreatePostDto;
-import com.guideme.guideme.post.dto.PostDetailDto;
 import com.guideme.guideme.post.dto.PostDto;
 import com.guideme.guideme.post.service.PostService;
 import com.guideme.guideme.security.user.CustomUserDetails;
@@ -17,8 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -47,17 +44,17 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("등록 성공!", null));
     }
 
-    @PreAuthorize("hasRole('GUIDE')")
-    @PostMapping("/postDetail")
-    public ResponseEntity<?> postDetail(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody PostDetailDto postDetailDto){
-        User user = customUserDetails.getUser();
-        postDetailDto.setUser_id(user.getId());
-        postService.postDetail(postDetailDto);
-        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("등록 성공!", null));
-    }
+    // 게시글 특정 날짜 가격 등록 or 수정
+//    @PreAuthorize("hasRole('GUIDE')")
+//    @PostMapping("/postDetail")
+//    public ResponseEntity<?> postDetail(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody PostDetailDto postDetailDto){
+//        User user = customUserDetails.getUser();
+//        postDetailDto.setUser_id(user.getId());
+//        postService.postDetail(postDetailDto);
+//        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("등록 성공!", null));
+//    }
 
-
-
+    // 게시글 검색
     @GetMapping("/post")
     public ResponseEntity<?> getPostList(@PageableDefault(page = 0, size = 10) Pageable pageable,
                                          @RequestParam(name = "keyword", defaultValue = "", required = false) String keyword,
@@ -65,6 +62,14 @@ public class PostController {
         Page<PostDto> posts = postService.getSearchList(pageable,keyword,sortType);
         return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("조회 성공!", posts));
     }
+
+    // 상세정보 조회
+    // 예를 들어, A 회사의 "코타키나발루 여행 가이드" 라는 게시글의 특정 날짜 선택시
+//    @GetMapping("/postDetail")
+//    public ResponseEntity<?> getPostDetail(@RequestParam(name = "post_detail_id") Long id){
+//        PostDetailDto postDetailDto = postService.getPostDetail(id);
+//        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("조회 성공!", postDetailDto));
+//    }
 
 //    @PostConstruct
 //    public void init(){

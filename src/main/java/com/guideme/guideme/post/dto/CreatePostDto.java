@@ -14,5 +14,8 @@ import java.util.List;
 public class CreatePostDto {
 
     private PostDto postDto;
-    private List<PostDetailDto> postDetailDto;
+    private List<SeasonalPriceDto> seasonalPriceDto;
+    private List<WeekdayPriceDto> weekdayPriceDto;
+
+//    private List<PostDetailDto> postDetailDto;
 }
