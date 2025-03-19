@@ -13,7 +13,7 @@ public class BusinessService {
 
     private final BusinessRepository businessRepository;
 
-    public Optional<Business> findByRegistration_number(String registrationNumber){
+    public Optional<Business> findByRegistrationNumber(String registrationNumber){
         return businessRepository.findByRegistrationNumber(registrationNumber);
     }
 

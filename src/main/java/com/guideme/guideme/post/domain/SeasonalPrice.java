@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,14 +22,14 @@ public class SeasonalPrice {
     @Column(name = "seasonal_price_id")
     private Long id;
 
-    private Long post_id;
-    private LocalDateTime date;
+    private Long postId;
+    private LocalDate date;
 
     private int price;
 
     @Builder
-    public SeasonalPrice(Long post_id, LocalDateTime date, int price) {
-        this.post_id = post_id;
+    public SeasonalPrice(Long postId, LocalDate date, int price) {
+        this.postId = postId;
         this.date = date;
         this.price = price;
     }

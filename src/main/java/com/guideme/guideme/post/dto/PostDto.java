@@ -14,13 +14,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class PostDto {
 
-    private Long post_id;
+    private Long postId;
 
-    private Long user_id;
+    private Long userId;
 
     private String title;   // 제목
     private String description; // 설명
-    private int defaultPrice;   // 기본 가격
+    private int price;   // 기본 가격
     private Status status; // 상태
 
 //    private int adultPrice;  // 대인 요금

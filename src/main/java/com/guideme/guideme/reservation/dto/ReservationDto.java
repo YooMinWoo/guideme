@@ -7,10 +7,10 @@ import lombok.Data;
 @Builder
 public class ReservationDto {
 
-    private Long reservation_id;
+    private Long reservationId;
 
-    private Long post_id;
-    private Long user_id;
+    private Long postId;
+    private Long userId;
 
     private int price;      // 가격
     private int cnt;        // 인원 수

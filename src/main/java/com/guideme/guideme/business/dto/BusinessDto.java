@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class BusinessDto {
 
-    private Long business_id;
+    private Long businessId;
     private Long userId;
     private String tradeName;  // 상호명
     private String businessMobile;  // 대표 전화번호

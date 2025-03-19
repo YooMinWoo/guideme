@@ -18,8 +18,8 @@ public class Reservation extends BaseEntity{
         @Column(name = "reservation_id")
         private Long id;
 
-        private Long post_detail_id;
-        private Long user_id;
+        private Long postDetailId;
+        private Long userId;
 
         private int price;      // 가격
         private int cnt;        // 인원 수

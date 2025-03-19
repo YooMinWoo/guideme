@@ -15,6 +15,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -35,14 +38,14 @@ public class PostService {
         postRepository.save(post);
         if(createPostDto.getSeasonalPriceDto() != null){
             for(SeasonalPriceDto dto : createPostDto.getSeasonalPriceDto()){
-                dto.setPost_id(post.getId());
+                dto.setPostId(post.getId());
                 SeasonalPrice seasonalPrice = PostMapper.toSeasonalPriceEntity(dto);
                 seasonalPriceRepository.save(seasonalPrice);
             }
         }
         if(createPostDto.getWeekdayPriceDto() != null){
             for(WeekdayPriceDto dto : createPostDto.getWeekdayPriceDto()){
-                dto.setPost_id(post.getId());
+                dto.setPostId(post.getId());
                 WeekdayPrice weekdayPrice = PostMapper.toWeekdayPriceEntity(dto);
                 weekdayPriceRepository.save(weekdayPrice);
             }
@@ -70,6 +73,28 @@ public class PostService {
                 sort = Sort.by(Sort.Direction.DESC, "createdDate");
         }
         return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+    }
+
+    public PostDto getPostDetail(Long postId, LocalDate date) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new CustomException("게시글이 존재하지 않습니다."));
+        PostDto postDto = PostMapper.toPostDto(post);
+        Optional<SeasonalPrice> seasonalPrice = seasonalPriceRepository.findByPostIdAndDate(postId, date);
+
+        String weekday = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.US);
+        System.out.println(Weekday.valueOf(weekday));
+
+        if(seasonalPrice.isPresent()){
+            postDto.setPrice(seasonalPrice.get().getPrice());
+            return postDto;
+        }
+        Optional<WeekdayPrice> weekdayPrice = weekdayPriceRepository.findByPostIdAndWeekday(postId, Weekday.valueOf(weekday));
+        if(weekdayPrice.isPresent()){
+            postDto.setPrice(weekdayPrice.get().getPrice());
+            return postDto;
+        }
+        return postDto;
+
     }
 
     // post_detail 등록/수정

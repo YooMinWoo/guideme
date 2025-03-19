@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class WeekdayPriceDto {
 
-    private Long weekday_price_id;
-    private Long post_id;
+    private Long weekdayPriceId;
+    private Long postId;
     
     private Weekday weekday;
 

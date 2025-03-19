@@ -16,7 +16,7 @@ public class WeekdayPrice {
     @Column(name = "weekday_price_id")
     private Long id;
 
-    private Long post_id;
+    private Long postId;
 
     @Enumerated(EnumType.STRING)
     private Weekday weekday;    // 요일
@@ -25,8 +25,8 @@ public class WeekdayPrice {
     private int price;
 
     @Builder
-    public WeekdayPrice(Long post_id, Weekday weekday, int price) {
-        this.post_id = post_id;
+    public WeekdayPrice(Long postId, Weekday weekday, int price) {
+        this.postId = postId;
         this.weekday = weekday;
         this.price = price;
     }

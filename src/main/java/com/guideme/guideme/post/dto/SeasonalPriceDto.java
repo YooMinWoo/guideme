@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -13,10 +14,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class SeasonalPriceDto {
 
-    private Long seasonal_price_id;
-    private Long post_id;
+    private Long seasonalPriceId;
+    private Long postId;
 
-    private LocalDateTime date;
+    private LocalDate date;
 
     private int price;
 }

@@ -12,28 +12,28 @@ public class PostMapper {
     public static Post toPostEntity(PostDto postDto){
 
         return Post.builder()
-                .user_id(postDto.getUser_id())
+                .userId(postDto.getUserId())
                 .title(postDto.getTitle())
                 .description(postDto.getDescription())
-                .defaultPrice(postDto.getDefaultPrice())
+                .price(postDto.getPrice())
                 .status(postDto.getStatus())
                 .build();
     }
 
     public static PostDto toPostDto(Post post) {
         return PostDto.builder()
-                .post_id(post.getId())
-                .user_id(post.getUser_id())
+                .postId(post.getId())
+                .userId(post.getUserId())
                 .title(post.getTitle())
                 .description(post.getDescription())
-                .defaultPrice(post.getDefaultPrice())
+                .price(post.getPrice())
                 .status(post.getStatus())
                 .build();
     }
 
     public static SeasonalPrice toSeasonalPriceEntity(SeasonalPriceDto seasonalPriceDto){
         return SeasonalPrice.builder()
-                .post_id(seasonalPriceDto.getPost_id())
+                .postId(seasonalPriceDto.getPostId())
                 .date(seasonalPriceDto.getDate())
                 .price(seasonalPriceDto.getPrice())
                 .build();
@@ -41,7 +41,7 @@ public class PostMapper {
 
     public static WeekdayPrice toWeekdayPriceEntity(WeekdayPriceDto weekdayPriceDto){
         return WeekdayPrice.builder()
-                .post_id(weekdayPriceDto.getPost_id())
+                .postId(weekdayPriceDto.getPostId())
                 .weekday(weekdayPriceDto.getWeekday())
                 .price(weekdayPriceDto.getPrice())
                 .build();

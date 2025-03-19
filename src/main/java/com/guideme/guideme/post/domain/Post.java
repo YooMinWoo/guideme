@@ -17,12 +17,12 @@ public class Post extends BaseEntity {
     @Column(name = "post_id")
     private Long id;
 
-    private Long user_id;
+    private Long userId;
 
     private String title;   // 제목
     private String description; // 설명
 
-    private int defaultPrice;   // 기본 가격
+    private int price;   // 기본 가격
 
     @Enumerated(EnumType.STRING)
     private Status status;    // 상태
@@ -59,11 +59,11 @@ public class Post extends BaseEntity {
 //    }
 
     @Builder
-    public Post(Long user_id, String title, String description, int defaultPrice, Status status) {
-        this.user_id = user_id;
+    public Post(Long userId, String title, String description, int price, Status status) {
+        this.userId = userId;
         this.title = title;
         this.description = description;
-        this.defaultPrice = defaultPrice;
+        this.price = price;
         this.status = status;
     }
 }

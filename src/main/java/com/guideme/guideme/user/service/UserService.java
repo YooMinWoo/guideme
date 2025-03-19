@@ -52,7 +52,7 @@ public class UserService {
     @Transactional
     public void guideSignup(UserDto userDto, BusinessDto businessDto) {
         if(userRepository.findByUsername(userDto.getUsername()).isPresent()) throw new CustomException("이미 존재하는 아이디입니다.");
-        if(businessService.findByRegistration_number(businessDto.getRegistrationNumber()).isPresent()) throw new CustomException("이미 존재하는 사업자 등록번호입니다.");
+        if(businessService.findByRegistrationNumber(businessDto.getRegistrationNumber()).isPresent()) throw new CustomException("이미 존재하는 사업자 등록번호입니다.");
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User user = UserMapper.toUserEntity(userDto);
         userRepository.save(user);

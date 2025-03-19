@@ -11,11 +11,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,11 +41,12 @@ public class PostController {
     @PostMapping("/post")
     public ResponseEntity<?> createPost(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody CreatePostDto createPostDto){
         User user = customUserDetails.getUser();
-        createPostDto.getPostDto().setUser_id(user.getId());
+        createPostDto.getPostDto().setUserId(user.getId());
         createPostDto.getPostDto().setStatus(Status.OPEN);
         postService.createPost(createPostDto);
         return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("등록 성공!", null));
     }
+
 
     // 게시글 특정 날짜 가격 등록 or 수정
 //    @PreAuthorize("hasRole('GUIDE')")
@@ -53,6 +57,15 @@ public class PostController {
 //        postService.postDetail(postDetailDto);
 //        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("등록 성공!", null));
 //    }
+
+    // 게시글 상세 검색
+    // reservation에 내역이 있는지 확인하여 status 변경
+    @GetMapping("/post/{postId}")
+    public ResponseEntity<?> getPostDetail(@PathVariable("postId") Long postId,
+                                           @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
+        PostDto post = postService.getPostDetail(postId, date);
+        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("조회 성공!", post));
+    }
 
     // 게시글 검색
     @GetMapping("/post")
