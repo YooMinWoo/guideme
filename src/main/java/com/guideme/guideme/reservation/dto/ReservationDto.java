@@ -3,6 +3,8 @@ package com.guideme.guideme.reservation.dto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 public class ReservationDto {
@@ -15,5 +17,6 @@ public class ReservationDto {
     private int price;      // 가격
     private int cnt;        // 인원 수
 
-    private int totalPrice; // 총 가격
+    private LocalDate start_date;
+    private LocalDate end_date;
 }

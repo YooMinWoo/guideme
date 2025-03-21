@@ -26,7 +26,6 @@ public class PostMapper {
                 .userId(post.getUserId())
                 .title(post.getTitle())
                 .description(post.getDescription())
-                .price(post.getPrice())
                 .status(post.getStatus())
                 .build();
     }

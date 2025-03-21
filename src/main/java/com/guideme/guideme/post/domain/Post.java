@@ -31,31 +31,12 @@ public class Post extends BaseEntity {
 //    private int childPrice;  // 소인 요금
 //    private LocalDate postDate; // 날짜
 
-    public void changeTitle(String title){
-        this.title = title;
-    }
-
-    public void changeStatus(Status status){
-        this.status = status;
-    }
-
 //    public void changePost(PostDto postDto){
 //        this.title = postDto.getTitle();
 //        this.title = postDto.getTitle();
 //        this.title = postDto.getTitle();
 //        this.title = postDto.getTitle();
 //        this.title = postDto.getTitle();
-//    }
-
-//    @Builder
-//    public Post(Long user_id, String title, String description, int adultPrice, int childPrice, LocalDate postDate, ReservationStatus reservationStatus) {
-//        this.user_id = user_id;
-//        this.title = title;
-//        this.description = description;
-//        this.adultPrice = adultPrice;
-//        this.childPrice = childPrice;
-//        this.postDate = postDate;
-//        this.reservationStatus = reservationStatus;
 //    }
 
     @Builder

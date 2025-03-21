@@ -9,22 +9,25 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Reservation extends BaseEntity{
+
         @Id
         @GeneratedValue
         @Column(name = "reservation_id")
         private Long id;
 
-        private Long postDetailId;
         private Long userId;
+        private Long postId;
 
         private int price;      // 가격
         private int cnt;        // 인원 수
 
-        public int getTotalPrice(){
-                return price * cnt;
-        }
+        private LocalDate startDate;
+        private LocalDate endDate;
+
 }

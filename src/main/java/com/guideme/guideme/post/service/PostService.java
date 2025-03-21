@@ -7,6 +7,8 @@ import com.guideme.guideme.post.mapper.PostMapper;
 import com.guideme.guideme.post.repository.PostRepository;
 import com.guideme.guideme.post.repository.SeasonalPriceRepository;
 import com.guideme.guideme.post.repository.WeekdayPriceRepository;
+import com.guideme.guideme.reservation.repository.ReservationRepository;
+import com.guideme.guideme.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +29,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final SeasonalPriceRepository seasonalPriceRepository;
     private final WeekdayPriceRepository weekdayPriceRepository;
+    private final ReservationService reservationService;
 
     public Optional<Post> findById(Long id){
         return postRepository.findById(id);
@@ -75,24 +78,32 @@ public class PostService {
         return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
     }
 
-    public PostDto getPostDetail(Long postId, LocalDate date) {
+    public PostDto getPostDetail(Long postId, LocalDate startDate, LocalDate endDate) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException("게시글이 존재하지 않습니다."));
         PostDto postDto = PostMapper.toPostDto(post);
-        Optional<SeasonalPrice> seasonalPrice = seasonalPriceRepository.findByPostIdAndDate(postId, date);
+        postDto.setStatus(reservationService.postStatus(postId, startDate, endDate));
+        for(LocalDate date : startDate.datesUntil(endDate.plusDays(1)).toList()){
+            Optional<SeasonalPrice> seasonalPrice = seasonalPriceRepository.findByPostIdAndDate(postId, date);
 
-        String weekday = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.US);
-        System.out.println(Weekday.valueOf(weekday));
+            String weekday = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.US);
 
-        if(seasonalPrice.isPresent()){
-            postDto.setPrice(seasonalPrice.get().getPrice());
-            return postDto;
+
+            // 성수기 등 특정 날짜의 가격이 있는지 확인 후 반환
+            if(seasonalPrice.isPresent()){
+                postDto.setPrice(postDto.getPrice() + seasonalPrice.get().getPrice());
+                continue;
+            }
+
+            // 주말 등 특정 요일의 가격이 있는지 확인 후 반환
+            Optional<WeekdayPrice> weekdayPrice = weekdayPriceRepository.findByPostIdAndWeekday(postId, Weekday.valueOf(weekday));
+            if(weekdayPrice.isPresent()){
+                postDto.setPrice(postDto.getPrice() + weekdayPrice.get().getPrice());
+                continue;
+            }
+            postDto.setPrice(postDto.getPrice() + post.getPrice());
         }
-        Optional<WeekdayPrice> weekdayPrice = weekdayPriceRepository.findByPostIdAndWeekday(postId, Weekday.valueOf(weekday));
-        if(weekdayPrice.isPresent()){
-            postDto.setPrice(weekdayPrice.get().getPrice());
-            return postDto;
-        }
+
         return postDto;
 
     }

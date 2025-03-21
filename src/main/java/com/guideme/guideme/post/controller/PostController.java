@@ -62,9 +62,10 @@ public class PostController {
     // reservation에 내역이 있는지 확인하여 status 변경
     @GetMapping("/post/{postId}")
     public ResponseEntity<?> getPostDetail(@PathVariable("postId") Long postId,
-                                           @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
-        PostDto post = postService.getPostDetail(postId, date);
-        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("조회 성공!", post));
+                                           @RequestParam("start_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                           @RequestParam(name = "end_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate){
+        PostDto postDto = postService.getPostDetail(postId, startDate, endDate);
+        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("조회 성공!", postDto));
     }
 
     // 게시글 검색
