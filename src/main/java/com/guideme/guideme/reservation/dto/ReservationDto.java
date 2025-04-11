@@ -15,12 +15,14 @@ public class ReservationDto {
 
     private Long reservationId;
 
-    private Long postId;
     private Long userId;
+    private Long postDetailId;
 
-    private int price;      // 가격
-    private int cnt;        // 인원 수
+    private int people;
 
-    private LocalDate start_date;
-    private LocalDate end_date;
+    public ReservationDto(Long userId, Long postDetailId, int people) {
+        this.userId = userId;
+        this.postDetailId = postDetailId;
+        this.people = people;
+    }
 }

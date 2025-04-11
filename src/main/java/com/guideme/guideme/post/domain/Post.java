@@ -1,6 +1,7 @@
 package com.guideme.guideme.post.domain;
 
 import com.guideme.guideme.global.entity.BaseEntity;
+import com.guideme.guideme.post.dto.PostDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -22,30 +23,28 @@ public class Post extends BaseEntity {
     private String title;   // 제목
     private String description; // 설명
 
-    private int price;   // 기본 가격
+    private int minPeople;      // 최소 인원
+    private int maxPeople;      // 최대 인원
 
-    @Enumerated(EnumType.STRING)
-    private Status status;    // 상태
-
-//    private int adultPrice;  // 대인 요금
-//    private int childPrice;  // 소인 요금
-//    private LocalDate postDate; // 날짜
-
-//    public void changePost(PostDto postDto){
-//        this.title = postDto.getTitle();
-//        this.title = postDto.getTitle();
-//        this.title = postDto.getTitle();
-//        this.title = postDto.getTitle();
-//        this.title = postDto.getTitle();
-//    }
 
     @Builder
-    public Post(Long userId, String title, String description, int price, Status status) {
+    public Post(Long userId, String title, String description, int minPeople, int maxPeople) {
         this.userId = userId;
         this.title = title;
         this.description = description;
-        this.price = price;
-        this.status = status;
+        this.minPeople = minPeople;
+        this.maxPeople = maxPeople;
+    }
+
+
+    public void change(PostDto postDto) {
+        if(postDto.getTitle() != null && !postDto.getTitle().isEmpty()) {
+            System.out.println("title : " + title + " \t -> " + postDto.getTitle());
+            title = postDto.getTitle();
+        }
+        if(postDto.getDescription() != null && !postDto.getDescription().isEmpty()) description = postDto.getDescription();
+        if(postDto.getMinPeople() != 0) minPeople = postDto.getMinPeople();
+        if(postDto.getMaxPeople() != 0) maxPeople = postDto.getMaxPeople();
     }
 }
 

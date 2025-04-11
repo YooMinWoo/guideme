@@ -3,7 +3,9 @@ package com.guideme.guideme.post.controller;
 import com.guideme.guideme.global.dto.ApiResponse;
 import com.guideme.guideme.post.domain.Status;
 import com.guideme.guideme.post.dto.CreatePostDto;
+import com.guideme.guideme.post.dto.PostDetailDto;
 import com.guideme.guideme.post.dto.PostDto;
+import com.guideme.guideme.post.dto.ResponsePostDetailDto;
 import com.guideme.guideme.post.service.PostService;
 import com.guideme.guideme.security.user.CustomUserDetails;
 import com.guideme.guideme.user.domain.User;
@@ -37,60 +39,70 @@ public class PostController {
 //    }
 
 
+    // 게시글 등록
     @PreAuthorize("hasRole('GUIDE')")
     @PostMapping("/post")
     public ResponseEntity<?> createPost(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody CreatePostDto createPostDto){
         User user = customUserDetails.getUser();
         createPostDto.getPostDto().setUserId(user.getId());
-        createPostDto.getPostDto().setStatus(Status.OPEN);
         postService.createPost(createPostDto);
         return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("등록 성공!", null));
     }
 
 
+    // 게시글 제목/내용 변경
+    @PreAuthorize("hasRole('GUIDE')")
+    @PutMapping("/post")
+    public ResponseEntity<?> postDetail(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody PostDto postDto){
+        User user = customUserDetails.getUser();
+        postDto.setUserId(user.getId());
+        postService.updatePost(postDto);
+        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("success!", null));
+    }
+
     // 게시글 특정 날짜 가격 등록 or 수정
-//    @PreAuthorize("hasRole('GUIDE')")
-//    @PostMapping("/postDetail")
-//    public ResponseEntity<?> postDetail(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody PostDetailDto postDetailDto){
-//        User user = customUserDetails.getUser();
-//        postDetailDto.setUser_id(user.getId());
-//        postService.postDetail(postDetailDto);
-//        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("등록 성공!", null));
-//    }
+    @PreAuthorize("hasRole('GUIDE')")
+    @PutMapping("/post/{postId}/{startDate}")
+    public ResponseEntity<?> postDetail(@PathVariable("postId") Long postId,
+                                        @PathVariable("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                        @AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                        @RequestBody PostDetailDto postDetailDto){
+        User user = customUserDetails.getUser();
+        postDetailDto.setPostId(postId);
+        postDetailDto.setStartDate(startDate);
+        postService.updatePostDetail(postDetailDto, user.getId());
+        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("success!", null));
+    }
+    /*
+    cnt를 추가했다.
+    cnt == 0 --> 모두 예약 완료
+    status == close --> 임의로 닫음
+
+    reservation --> cnt - 1
+    reservation.cancel --> cnt + 1
+    
+     */
+
+    // PostDetail 삭제
+    @PreAuthorize("hasRole('GUIDE')")
+    @DeleteMapping("/post/{postId}/{startDate}")
+    public ResponseEntity<?> deletePostDetail(@PathVariable("postId") Long postId,
+                                        @PathVariable("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                        @AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                        @RequestBody PostDetailDto postDetailDto){
+        postDetailDto.setPostId(postId);
+        postDetailDto.setStartDate(startDate);
+        User user = customUserDetails.getUser();
+        postService.deletePostDetail(postDetailDto, user.getId());
+        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("삭제 성공!", null));
+    }
 
     // 게시글 상세 검색
-    // reservation에 내역이 있는지 확인하여 status 변경
-    @GetMapping("/post/{postId}")
+    @GetMapping("/post/{postId}/{startDate}")
     public ResponseEntity<?> getPostDetail(@PathVariable("postId") Long postId,
-                                           @RequestParam("start_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                                           @RequestParam(name = "end_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate){
-        PostDto postDto = postService.getPostDetail(postId, startDate, endDate);
-        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("조회 성공!", postDto));
+                                           @PathVariable("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate){
+        ResponsePostDetailDto responsePostDetailDto = postService.getPostDetail(postId, startDate);
+        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("조회 성공!", responsePostDetailDto));
     }
 
-    // 게시글 검색
-    @GetMapping("/post")
-    public ResponseEntity<?> getPostList(@PageableDefault(page = 0, size = 10) Pageable pageable,
-                                         @RequestParam(name = "keyword", defaultValue = "", required = false) String keyword,
-                                         @RequestParam(name = "sort", defaultValue = "latest", required = false) String sortType){
-        Page<PostDto> posts = postService.getSearchList(pageable,keyword,sortType);
-        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("조회 성공!", posts));
-    }
-
-    // 상세정보 조회
-    // 예를 들어, A 회사의 "코타키나발루 여행 가이드" 라는 게시글의 특정 날짜 선택시
-//    @GetMapping("/postDetail")
-//    public ResponseEntity<?> getPostDetail(@RequestParam(name = "post_detail_id") Long id){
-//        PostDetailDto postDetailDto = postService.getPostDetail(id);
-//        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("조회 성공!", postDetailDto));
-//    }
-
-//    @PostConstruct
-//    public void init(){
-//        for(int i=0; i<100; i++){
-//            PostDto postDto = new PostDto();
-//            postDto.setTitle("게시물"+i);
-//            postService.createPost(postDto);
-//        }
-//    }
 }

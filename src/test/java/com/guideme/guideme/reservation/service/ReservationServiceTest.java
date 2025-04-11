@@ -18,17 +18,17 @@ public class ReservationServiceTest {
     @Autowired
     ReservationRepository reservationRepository;
 
-    @Test
-    public void reservationTest(){
-        // given
-        ReservationDto reservationDto = new ReservationDto();
-        Post post = Post.builder()
-                .title("test1")
-                .price(50000)
-                .build();
-        reservationDto.setStart_date(LocalDate.parse("2025-04-03"));
-        reservationDto.setEnd_date(LocalDate.parse("2025-04-08"));
-
-
-    }
+//    @Test
+//    public void reservationTest(){
+//        // given
+//        ReservationDto reservationDto = new ReservationDto();
+//        Post post = Post.builder()
+//                .title("test1")
+//                .price(50000)
+//                .build();
+//        reservationDto.setStart_date(LocalDate.parse("2025-04-03"));
+//        reservationDto.setEnd_date(LocalDate.parse("2025-04-08"));
+//
+//
+//    }
 }

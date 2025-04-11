@@ -13,17 +13,13 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostDto {
-
     private Long postId;
 
     private Long userId;
 
     private String title;   // 제목
     private String description; // 설명
-    private int price;   // 기본 가격
-    private Status status; // 상태
 
-//    private int adultPrice;  // 대인 요금
-//    private int childPrice;  // 소인 요금
-//    private LocalDate postDate; // 날짜
+    private int minPeople;      // 최소 인원
+    private int maxPeople;      // 최대 인원
 }

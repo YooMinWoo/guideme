@@ -1,16 +1,21 @@
 package com.guideme.guideme.reservation.service;
 
 import com.guideme.guideme.global.exception.CustomException;
+import com.guideme.guideme.post.domain.Post;
+import com.guideme.guideme.post.domain.PostDetail;
 import com.guideme.guideme.post.domain.Status;
-import com.guideme.guideme.post.service.PostService;
+import com.guideme.guideme.post.repository.PostDetailRepository;
 import com.guideme.guideme.reservation.domain.Reservation;
 import com.guideme.guideme.reservation.dto.ReservationDto;
+import com.guideme.guideme.reservation.mapper.ReservationMapper;
 import com.guideme.guideme.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,32 +23,29 @@ import java.util.Optional;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final PostDetailRepository postDetailRepository;
 
-    public Status postStatus(Long postId, LocalDate startDate, LocalDate endDate){
-        Optional<Reservation> reservation = reservationRepository.findReservationStatus(postId, startDate, endDate);
-        if(reservation.isEmpty()) return Status.OPEN;
-        return Status.CLOSED;
+    public List<ReservationDto> getReservations(Long userId){
+        return ReservationMapper.toReservationDtoList(reservationRepository.findByUserId(userId));
     }
 
-    public ReservationDto reservation(ReservationDto request) {
-        Optional<Reservation> reservation = reservationRepository.findReservationStatus(
-                request.getPostId(), request.getStart_date(), request.getEnd_date());
-        if(reservation.isPresent()) throw new CustomException("이미 누군가 예약을 먼저했네 ㅠㅠ");
-        // 날짜별 가격 입력하는거 만들어야 함
-        /*
-        4월 10일부터 4월 13일이라고 봤을 때
-        예약을 할 때
+    @Transactional
+    public void reservation(ReservationDto reservationDto){
+        PostDetail postDetail = postDetailRepository.findById(reservationDto.getPostDetailId())
+                .orElseThrow(() -> new CustomException("예약이 불가능합니다."));
 
-        예약 가능한 일자인지 확인
-        해당하는 날짜의 가격 가져오기
+        if(postDetail.getStatus() == Status.CLOSED) throw new CustomException("예약이 불가능합니다.");
+        Reservation reservation = ReservationMapper.toReservationEntity(reservationDto);
+        postDetail.changeStatus(Status.CLOSED);
+        reservationRepository.save(reservation);
+    }
 
-        sesonal, weekend 빼고 일일이 기입
-         */
-
-        long until = request.getStart_date().until(request.getEnd_date(), ChronoUnit.DAYS);
-        for(int i = 0; i <= until; i++){
-
-        }
-        return request;
+    @Transactional
+    public void cancelReservation(Long userId, Long reservationId){
+        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new CustomException("없는 예약내역입니다."));
+        if(reservation.getUserId() != userId) throw new CustomException("회원정보가 일치하지 않습니다.");
+        PostDetail postDetail = postDetailRepository.findById(reservation.getPostDetailId()).orElseThrow(() -> new CustomException("에러가 발생"));
+        postDetail.changeStatus(Status.OPEN);
+        reservationRepository.delete(reservation);
     }
 }

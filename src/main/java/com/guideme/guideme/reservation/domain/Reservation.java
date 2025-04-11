@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,12 +23,13 @@ public class Reservation extends BaseEntity{
         private Long id;
 
         private Long userId;
-        private Long postId;
+        private Long postDetailId;
+        private int people;
 
-        private int price;      // 가격
-        private int cnt;        // 인원 수
-
-        private LocalDate startDate;
-        private LocalDate endDate;
-
+        @Builder
+        public Reservation(Long userId, Long postDetailId, int people) {
+                this.userId = userId;
+                this.postDetailId = postDetailId;
+                this.people = people;
+        }
 }
