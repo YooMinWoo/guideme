@@ -13,6 +13,7 @@ public class PostMapper {
                 .description(postDto.getDescription())
                 .minPeople(postDto.getMinPeople())
                 .maxPeople(postDto.getMaxPeople())
+                .status(postDto.getStatus())
                 .build();
     }
 

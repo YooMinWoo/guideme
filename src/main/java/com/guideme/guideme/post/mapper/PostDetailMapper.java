@@ -12,7 +12,8 @@ public class PostDetailMapper {
                 .startDate(postDetailDto.getStartDate())
                 .pricePerTeam(postDetailDto.getPricePerTeam())
                 .status(postDetailDto.getStatus())
-                .cnt(postDetailDto.getCnt())
+                .totalCnt(postDetailDto.getTotalCnt())
+                .availableCnt(postDetailDto.getAvailableCnt())
                 .build();
 
     }

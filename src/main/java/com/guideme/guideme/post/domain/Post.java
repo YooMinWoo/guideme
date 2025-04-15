@@ -26,16 +26,17 @@ public class Post extends BaseEntity {
     private int minPeople;      // 최소 인원
     private int maxPeople;      // 최대 인원
 
+    private Status status;
 
     @Builder
-    public Post(Long userId, String title, String description, int minPeople, int maxPeople) {
+    public Post(Long userId, String title, String description, int minPeople, int maxPeople, Status status) {
         this.userId = userId;
         this.title = title;
         this.description = description;
         this.minPeople = minPeople;
         this.maxPeople = maxPeople;
+        this.status = status;
     }
-
 
     public void change(PostDto postDto) {
         if(postDto.getTitle() != null && !postDto.getTitle().isEmpty()) {
@@ -45,6 +46,7 @@ public class Post extends BaseEntity {
         if(postDto.getDescription() != null && !postDto.getDescription().isEmpty()) description = postDto.getDescription();
         if(postDto.getMinPeople() != 0) minPeople = postDto.getMinPeople();
         if(postDto.getMaxPeople() != 0) maxPeople = postDto.getMaxPeople();
+        if(postDto.getStatus() != null) status = postDto.getStatus();
     }
 }
 

@@ -22,4 +22,6 @@ public class PostDto {
 
     private int minPeople;      // 최소 인원
     private int maxPeople;      // 최대 인원
+
+    private Status status;
 }

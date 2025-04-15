@@ -24,12 +24,14 @@ public class PostDetailDto {
     private LocalDate startDate;
     private int pricePerTeam;   // 날짜별 한 팀 당 가격
 
-    private Integer cnt;    // 개수
+    private Integer totalCnt;    // 총 개수
+    private Integer availableCnt;    // 현재 예약 가능한 개수
     private Status status;
 
-    public PostDetailDto(Long postId, LocalDate startDate, Integer cnt) {
+    public PostDetailDto(Long postId, LocalDate startDate, Integer totalCnt, Integer availableCnt) {
         this.postId = postId;
         this.startDate = startDate;
-        this.cnt = cnt;
+        this.totalCnt = totalCnt;
+        this.availableCnt = availableCnt;
     }
 }

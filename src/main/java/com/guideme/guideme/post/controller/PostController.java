@@ -83,21 +83,21 @@ public class PostController {
     
      */
 
-    // PostDetail 삭제
-    @PreAuthorize("hasRole('GUIDE')")
-    @DeleteMapping("/post/{postId}/{startDate}")
-    public ResponseEntity<?> deletePostDetail(@PathVariable("postId") Long postId,
-                                        @PathVariable("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                                        @AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                        @RequestBody PostDetailDto postDetailDto){
-        postDetailDto.setPostId(postId);
-        postDetailDto.setStartDate(startDate);
-        User user = customUserDetails.getUser();
-        postService.deletePostDetail(postDetailDto, user.getId());
-        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("삭제 성공!", null));
-    }
+//    // PostDetail 삭제
+//    @PreAuthorize("hasRole('GUIDE')")
+//    @DeleteMapping("/post/{postId}/{startDate}")
+//    public ResponseEntity<?> deletePostDetail(@PathVariable("postId") Long postId,
+//                                        @PathVariable("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+//                                        @AuthenticationPrincipal CustomUserDetails customUserDetails,
+//                                        @RequestBody PostDetailDto postDetailDto){
+//        postDetailDto.setPostId(postId);
+//        postDetailDto.setStartDate(startDate);
+//        User user = customUserDetails.getUser();
+//        postService.deletePostDetail(postDetailDto, user.getId());
+//        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("삭제 성공!", null));
+//    }
 
-    // 게시글 상세 검색
+    // 게시글 조회
     @GetMapping("/post/{postId}/{startDate}")
     public ResponseEntity<?> getPostDetail(@PathVariable("postId") Long postId,
                                            @PathVariable("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate){

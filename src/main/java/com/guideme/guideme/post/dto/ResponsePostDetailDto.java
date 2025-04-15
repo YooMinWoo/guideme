@@ -24,6 +24,7 @@ public class ResponsePostDetailDto {
     private int pricePerTeam;   // 날짜별 한 팀 당 가격
     private int minPeople;
     private int maxPeople;
+    private int availableCnt;   // 이용 가능한 개수
     private Status status;
 
 }
