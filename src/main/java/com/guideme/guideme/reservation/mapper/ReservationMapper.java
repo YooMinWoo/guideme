@@ -13,6 +13,8 @@ public class ReservationMapper {
                 .userId(reservationDto.getUserId())
                 .postDetailId(reservationDto.getPostDetailId())
                 .people(reservationDto.getPeople())
+                .payment(reservationDto.getPayment())
+                .reservationStatus(reservationDto.getReservationStatus())
                 .build();
     }
 
@@ -22,6 +24,8 @@ public class ReservationMapper {
                 .postDetailId(reservation.getPostDetailId())
                 .userId(reservation.getUserId())
                 .people(reservation.getPeople())
+                .payment(reservation.getPayment())
+                .reservationStatus(reservation.getReservationStatus())
                 .build();
     }
 

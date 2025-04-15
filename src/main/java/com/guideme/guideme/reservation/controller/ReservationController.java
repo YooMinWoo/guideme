@@ -3,6 +3,7 @@ package com.guideme.guideme.reservation.controller;
 import com.guideme.guideme.global.dto.ApiResponse;
 import com.guideme.guideme.reservation.domain.Reservation;
 import com.guideme.guideme.reservation.dto.ReservationDto;
+import com.guideme.guideme.reservation.dto.ResponseReservation;
 import com.guideme.guideme.reservation.service.ReservationService;
 import com.guideme.guideme.security.user.CustomUserDetails;
 import com.guideme.guideme.user.dto.SignupDto;
@@ -23,15 +24,17 @@ public class ReservationController {
 
     private final ReservationService reservationService;
 
+    // 예약 내역 확인
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/reservation")
     public ResponseEntity<?> reservationHistory(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         Long userId = customUserDetails.getUser().getId();
-        List<ReservationDto> reservationDtoList = reservationService.getReservations(userId);
-        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("예약 내역!", reservationDtoList));
+        List<ResponseReservation> responseReservationList = reservationService.getReservations(userId);
+        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("예약 내역!", responseReservationList));
     }
 
 
+    // 예약하기
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/reservation/{postDetailId}")
     public ResponseEntity<?> reservation(@PathVariable("postDetailId") Long postDetailId,

@@ -47,15 +47,18 @@ public class PostService {
     }
 
     public ResponsePostDetailDto getPostDetail(Long postId, LocalDate startDate) {
+
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException("게시글이 존재하지 않습니다."));
         PostDetail postDetail = postDetailRepository.findByPostIdAndStartDate(postId, startDate)
                 .orElseThrow(() -> new CustomException("게시글이 존재하지 않습니다."));
+
         Status status = Status.CLOSED;
+
         if(post.getStatus() == Status.OPEN && postDetail.getStatus() == Status.OPEN && postDetail.getAvailableCnt() > 0) status = Status.OPEN;
 
         return ResponsePostDetailDto.builder()
-                .postDetailId(postDetail.getPostId())
+                .postDetailId(postDetail.getId())
                 .title(post.getTitle())
                 .description(post.getDescription())
                 .startDate(postDetail.getStartDate())

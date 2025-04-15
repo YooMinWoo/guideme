@@ -61,4 +61,8 @@ public class PostDetail {
     public void changeStatus(Status status){
         this.status = status;
     }
+
+    public void changeAvailableCnt(){
+        this.availableCnt -= 1;
+    }
 }

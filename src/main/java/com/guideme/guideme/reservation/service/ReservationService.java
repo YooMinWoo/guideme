@@ -5,8 +5,11 @@ import com.guideme.guideme.post.domain.Post;
 import com.guideme.guideme.post.domain.PostDetail;
 import com.guideme.guideme.post.domain.Status;
 import com.guideme.guideme.post.repository.PostDetailRepository;
+import com.guideme.guideme.post.repository.PostRepository;
 import com.guideme.guideme.reservation.domain.Reservation;
+import com.guideme.guideme.reservation.domain.ReservationStatus;
 import com.guideme.guideme.reservation.dto.ReservationDto;
+import com.guideme.guideme.reservation.dto.ResponseReservation;
 import com.guideme.guideme.reservation.mapper.ReservationMapper;
 import com.guideme.guideme.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,22 +27,49 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final PostDetailRepository postDetailRepository;
+    private final PostRepository postRepository;
 
-    public List<ReservationDto> getReservations(Long userId){
-        return ReservationMapper.toReservationDtoList(reservationRepository.findByUserId(userId));
+    public List<ResponseReservation> getReservations(Long userId){
+        List<ResponseReservation> responseReservationList = new ArrayList<>();
+        List<Reservation> reservationList = reservationRepository.findByUserId(userId);
+
+        for(Reservation reservation : reservationList){
+            PostDetail postDetail = postDetailRepository.findById(reservation.getPostDetailId()).orElseThrow(() -> new CustomException("예약 내역을 찾을 수 없습니다."));
+            Post post = postRepository.findById(postDetail.getPostId()).orElseThrow(() -> new CustomException("예약 내역을 찾을 수 없습니다."));
+
+            ResponseReservation result = ResponseReservation.builder()
+                    .title(post.getTitle())
+                    .description(post.getDescription())
+                    .startDate(postDetail.getStartDate())
+                    .pricePerTeam(postDetail.getPricePerTeam())
+                    .people(reservation.getPeople())
+                    .payment(reservation.getPayment())
+                    .createDate(reservation.getCreatedDate())
+                    .reservationStatus(reservation.getReservationStatus())
+                    .build();
+
+            responseReservationList.add(result);
+        }
+        return responseReservationList;
     }
 
+    // 예약하기
     @Transactional
     public void reservation(ReservationDto reservationDto){
         PostDetail postDetail = postDetailRepository.findById(reservationDto.getPostDetailId())
-                .orElseThrow(() -> new CustomException("예약이 불가능합니다."));
+                .orElseThrow(() -> new CustomException("공습경보!!!"));
+        Post post = postRepository.findById(postDetail.getPostId())
+                .orElseThrow(() -> new CustomException("경찰력 총동원!!!"));
 
-        if(postDetail.getStatus() == Status.CLOSED) throw new CustomException("예약이 불가능합니다.");
+        if(postDetail.getStatus() == Status.CLOSED || post.getStatus() == Status.CLOSED || postDetail.getAvailableCnt() == 0) throw new CustomException("예약이 불가능합니다.");
+        reservationDto.setPayment(postDetail.getPricePerTeam());
+        reservationDto.setReservationStatus(ReservationStatus.RESERVED);
         Reservation reservation = ReservationMapper.toReservationEntity(reservationDto);
-        postDetail.changeStatus(Status.CLOSED);
+        postDetail.changeAvailableCnt();
         reservationRepository.save(reservation);
     }
 
+    // 예약 취소
     @Transactional
     public void cancelReservation(Long userId, Long reservationId){
         Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new CustomException("없는 예약내역입니다."));

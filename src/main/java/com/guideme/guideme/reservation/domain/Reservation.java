@@ -25,11 +25,16 @@ public class Reservation extends BaseEntity{
         private Long userId;
         private Long postDetailId;
         private int people;
+        private int payment;
+
+        private ReservationStatus reservationStatus;
 
         @Builder
-        public Reservation(Long userId, Long postDetailId, int people) {
+        public Reservation(Long userId, Long postDetailId, int people, int payment, ReservationStatus reservationStatus) {
                 this.userId = userId;
                 this.postDetailId = postDetailId;
                 this.people = people;
+                this.payment = payment;
+                this.reservationStatus = reservationStatus;
         }
 }
