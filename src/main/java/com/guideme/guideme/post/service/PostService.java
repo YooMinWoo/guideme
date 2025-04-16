@@ -7,6 +7,8 @@ import com.guideme.guideme.post.mapper.PostDetailMapper;
 import com.guideme.guideme.post.mapper.PostMapper;
 import com.guideme.guideme.post.repository.PostDetailRepository;
 import com.guideme.guideme.post.repository.PostRepository;
+import com.guideme.guideme.reservation.domain.Reservation;
+import com.guideme.guideme.reservation.repository.ReservationRepository;
 import com.guideme.guideme.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +27,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final PostDetailRepository postDetailRepository;
-    private final ReservationService reservationService;
+    private final ReservationRepository reservationRepository;
 
     public Optional<Post> findById(Long id){
         return postRepository.findById(id);
@@ -50,6 +52,7 @@ public class PostService {
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException("게시글이 존재하지 않습니다."));
+//        if(post.isDeleted()) throw new CustomException("게시글이 존재하지 않습니다.");
         PostDetail postDetail = postDetailRepository.findByPostIdAndStartDate(postId, startDate)
                 .orElseThrow(() -> new CustomException("게시글이 존재하지 않습니다."));
 
@@ -93,14 +96,15 @@ public class PostService {
         post.change(postDto);
     }
 
-    public void deletePostDetail(PostDetailDto postDetailDto, Long userId) {
-        Post post = postRepository.findById(postDetailDto.getPostId())
-                .orElseThrow(() -> new CustomException("없는 게시물입니다."));
-        if(post.getUserId() != userId) throw new CustomException("회원정보가 일치하지 않습니다.");
-        PostDetail postDetail = postDetailRepository.findByPostIdAndStartDate(postDetailDto.getPostId(), postDetailDto.getStartDate())
+    @Transactional
+    public void deletePostDetail(Long postId, LocalDate startDate, Long userId) {
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException("게시글이 존재하지 않습니다."));
-
-        postDetailRepository.delete(postDetail);
+//        if(post.isDeleted()) throw new CustomException("게시글이 존재하지 않습니다.");
+        if(post.getUserId() != userId) throw new CustomException("회원정보가 일치하지 않습니다.");
+        PostDetail postDetail = postDetailRepository.findByPostIdAndStartDate(postId, startDate)
+                .orElseThrow(() -> new CustomException("게시글이 존재하지 않습니다."));
+        postDetail.changeStatus(Status.CLOSED);
     }
 
     @Transactional
@@ -119,4 +123,17 @@ public class PostService {
         }
     }
 
+    @Transactional
+    public void deletePost(Long postId, Long userId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new CustomException("없는 게시물입니다."));
+        if(post.getUserId() != userId) throw new CustomException("회원정보가 일치하지 않습니다.");
+        List<Reservation> reservationList = reservationRepository.findReservationByPostIdAndReserved(post.getId());
+
+        if(!reservationList.isEmpty()) throw new CustomException("예약건이 있습니다. 완료 이후 삭제가 가능합니다.");
+        post.deleted();
+//        PostDetail postDetail = postDetailRepository.findByPostIdAndStartDate(postDetailDto.getPostId(), postDetailDto.getStartDate())
+//                .orElseThrow(() -> new CustomException("게시글이 존재하지 않습니다."));
+
+    }
 }

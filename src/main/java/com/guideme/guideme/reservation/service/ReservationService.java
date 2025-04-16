@@ -62,10 +62,12 @@ public class ReservationService {
                 .orElseThrow(() -> new CustomException("경찰력 총동원!!!"));
 
         if(postDetail.getStatus() == Status.CLOSED || post.getStatus() == Status.CLOSED || postDetail.getAvailableCnt() == 0) throw new CustomException("예약이 불가능합니다.");
+        if(reservationDto.getPeople() < post.getMaxPeople() || reservationDto.getPeople() > post.getMaxPeople()) throw new CustomException("해당되지 않는 인원수입니다.");
         reservationDto.setPayment(postDetail.getPricePerTeam());
         reservationDto.setReservationStatus(ReservationStatus.RESERVED);
         Reservation reservation = ReservationMapper.toReservationEntity(reservationDto);
-        postDetail.changeAvailableCnt();
+
+        postDetail.changeAvailableCnt(reservation.getReservationStatus());
         reservationRepository.save(reservation);
     }
 
@@ -75,7 +77,8 @@ public class ReservationService {
         Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new CustomException("없는 예약내역입니다."));
         if(reservation.getUserId() != userId) throw new CustomException("회원정보가 일치하지 않습니다.");
         PostDetail postDetail = postDetailRepository.findById(reservation.getPostDetailId()).orElseThrow(() -> new CustomException("에러가 발생"));
-        postDetail.changeStatus(Status.OPEN);
-        reservationRepository.delete(reservation);
+
+        reservation.changeReservationStatus(ReservationStatus.CANCELLED);
+        postDetail.changeAvailableCnt(ReservationStatus.CANCELLED);
     }
 }

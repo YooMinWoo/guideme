@@ -53,10 +53,20 @@ public class PostController {
     // 게시글 제목/내용 변경
     @PreAuthorize("hasRole('GUIDE')")
     @PutMapping("/post")
-    public ResponseEntity<?> postDetail(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody PostDto postDto){
+    public ResponseEntity<?> updatePost(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody PostDto postDto){
         User user = customUserDetails.getUser();
         postDto.setUserId(user.getId());
         postService.updatePost(postDto);
+        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("success!", null));
+    }
+
+    // 게시글 삭제
+    @PreAuthorize("hasRole('GUIDE')")
+    @DeleteMapping("/post/{postId}")
+    public ResponseEntity<?> deletePost(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                        @PathVariable("postId") Long postId){
+        User user = customUserDetails.getUser();
+        postService.deletePost(postId, user.getId());
         return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("success!", null));
     }
 
@@ -79,15 +89,9 @@ public class PostController {
     @DeleteMapping("/post/{postId}/{startDate}")
     public ResponseEntity<?> deletePostDetail(@PathVariable("postId") Long postId,
                                         @PathVariable("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                                        @AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                        @RequestBody PostDetailDto postDetailDto){
-        /*
-            해당 postDetail을 마감처리 한다.
-         */
-        postDetailDto.setPostId(postId);
-        postDetailDto.setStartDate(startDate);
+                                        @AuthenticationPrincipal CustomUserDetails customUserDetails){
         User user = customUserDetails.getUser();
-        postService.deletePostDetail(postDetailDto, user.getId());
+        postService.deletePostDetail(postId, startDate, user.getId());
         return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("삭제 성공!", null));
     }
 

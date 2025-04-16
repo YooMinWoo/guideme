@@ -2,6 +2,7 @@ package com.guideme.guideme.post.domain;
 
 import com.guideme.guideme.global.exception.CustomException;
 import com.guideme.guideme.post.dto.PostDetailDto;
+import com.guideme.guideme.reservation.domain.ReservationStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -62,7 +63,8 @@ public class PostDetail {
         this.status = status;
     }
 
-    public void changeAvailableCnt(){
-        this.availableCnt -= 1;
+    public void changeAvailableCnt(ReservationStatus reservationStatus){
+        if(reservationStatus == ReservationStatus.RESERVED) this.availableCnt -= 1;
+        if(reservationStatus == ReservationStatus.CANCELLED) this.availableCnt += 1;
     }
 }

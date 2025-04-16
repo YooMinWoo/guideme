@@ -46,10 +46,11 @@ public class ReservationController {
         return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("예약 완료", null));
     }
 
+    // 예약 취소
     @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/reservation/{reservationId}")
-    public ResponseEntity<?> cancelReservation(@PathVariable("reservationId") Long reservationId,
-                                         @AuthenticationPrincipal CustomUserDetails customUserDetails){
+    public ResponseEntity<?> cancelReservation(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                               @PathVariable("reservationId") Long reservationId){
         Long userId = customUserDetails.getUser().getId();
         reservationService.cancelReservation(userId, reservationId);
         return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("예약 취소 완료", null));

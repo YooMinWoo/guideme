@@ -7,10 +7,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Where(clause = "deleted = false")
 public class Post extends BaseEntity {
 
     @Id
@@ -26,7 +28,10 @@ public class Post extends BaseEntity {
     private int minPeople;      // 최소 인원
     private int maxPeople;      // 최대 인원
 
+    @Enumerated(EnumType.STRING)
     private Status status;
+
+    private boolean deleted = false;     // 삭제여부
 
     @Builder
     public Post(Long userId, String title, String description, int minPeople, int maxPeople, Status status) {
@@ -47,6 +52,10 @@ public class Post extends BaseEntity {
         if(postDto.getMinPeople() != 0) minPeople = postDto.getMinPeople();
         if(postDto.getMaxPeople() != 0) maxPeople = postDto.getMaxPeople();
         if(postDto.getStatus() != null) status = postDto.getStatus();
+    }
+
+    public void deleted(){
+        this.deleted = true;
     }
 }
 
