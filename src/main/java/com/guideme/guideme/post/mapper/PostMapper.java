@@ -9,6 +9,7 @@ public class PostMapper {
 
         return Post.builder()
                 .userId(postDto.getUserId())
+                .regionId(postDto.getRegionId())
                 .title(postDto.getTitle())
                 .description(postDto.getDescription())
                 .minPeople(postDto.getMinPeople())

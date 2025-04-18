@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface BusinessRepository extends JpaRepository<Business, Long> {
 
     Optional<Business> findByRegistrationNumber(String registrationNumber);
+
+    Optional<Business> findByUserId(Long userId);
 }

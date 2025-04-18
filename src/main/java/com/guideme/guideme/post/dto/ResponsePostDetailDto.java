@@ -20,6 +20,13 @@ public class ResponsePostDetailDto {
     private String title;
     private String description;
 
+    private String country;
+    private String city;
+
+    private String tradeName;  // 상호명
+    private String businessMobile;  // 대표 전화번호
+    private String businessEmail;  // 대표 이메일
+
     private LocalDate startDate;
     private int pricePerTeam;   // 날짜별 한 팀 당 가격
     private int minPeople;

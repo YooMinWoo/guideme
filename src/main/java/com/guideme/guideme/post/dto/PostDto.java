@@ -16,6 +16,7 @@ public class PostDto {
     private Long postId;
 
     private Long userId;
+    private Long regionId;      // 지역 도메인
 
     private String title;   // 제목
     private String description; // 설명

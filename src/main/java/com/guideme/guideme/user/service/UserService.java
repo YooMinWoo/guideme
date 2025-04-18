@@ -39,18 +39,19 @@ public class UserService {
     }
 
     // 유저 회원가입
-    public void userSignup(UserDto userDto) {
+    public User userSignup(UserDto userDto) {
         if(userRepository.findByUsername(userDto.getUsername()).isPresent()) throw new CustomException("이미 존재하는 아이디입니다.");
 //        if(userRepository.findByNameAndResidentAndRole(userDto.getName(), userDto.getResident, userDto.getRole()).isPresent()) throw new CustomException("이미 가입된 회원입니다.");
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User user = UserMapper.toUserEntity(userDto);
 
         userRepository.save(user);
+        return user;
     }
 
     // 가이드 회원가입
     @Transactional
-    public void guideSignup(UserDto userDto, BusinessDto businessDto) {
+    public User guideSignup(UserDto userDto, BusinessDto businessDto) {
         if(userRepository.findByUsername(userDto.getUsername()).isPresent()) throw new CustomException("이미 존재하는 아이디입니다.");
         if(businessService.findByRegistrationNumber(businessDto.getRegistrationNumber()).isPresent()) throw new CustomException("이미 존재하는 사업자 등록번호입니다.");
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
@@ -60,15 +61,19 @@ public class UserService {
         businessDto.setUserId(user.getId());
         Business business = BusinessMapper.toBusinessEntity(businessDto);
         businessService.save(business);
+
+        return user;
     }
 
     // 관리자 회원가입
-    public void adminSignup(UserDto userDto, String adminCode) {
+    public User adminSignup(UserDto userDto, String adminCode) {
         if(userRepository.findByUsername(userDto.getUsername()).isPresent()) throw new CustomException("이미 존재하는 아이디입니다.");
-        if(!adminCode.equals(adminCode)) throw new CustomException("관리자 코드가 일치하지 않습니다.");
+        if(!adminCode.equals(this.adminCode)) throw new CustomException("관리자 코드가 일치하지 않습니다.");
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User user = UserMapper.toUserEntity(userDto);
         userRepository.save(user);
+
+        return user;
     }
 
     // 로그인

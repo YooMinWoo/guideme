@@ -21,6 +21,7 @@ public class Post extends BaseEntity {
     private Long id;
 
     private Long userId;
+    private Long regionId;      // 지역 도메인
 
     private String title;   // 제목
     private String description; // 설명
@@ -34,8 +35,9 @@ public class Post extends BaseEntity {
     private boolean deleted = false;     // 삭제여부
 
     @Builder
-    public Post(Long userId, String title, String description, int minPeople, int maxPeople, Status status) {
+    public Post(Long userId, Long regionId, String title, String description, int minPeople, int maxPeople, Status status) {
         this.userId = userId;
+        this.regionId = regionId;
         this.title = title;
         this.description = description;
         this.minPeople = minPeople;
@@ -43,15 +45,19 @@ public class Post extends BaseEntity {
         this.status = status;
     }
 
+
+
     public void change(PostDto postDto) {
         if(postDto.getTitle() != null && !postDto.getTitle().isEmpty()) {
             System.out.println("title : " + title + " \t -> " + postDto.getTitle());
             title = postDto.getTitle();
         }
+
         if(postDto.getDescription() != null && !postDto.getDescription().isEmpty()) description = postDto.getDescription();
         if(postDto.getMinPeople() != 0) minPeople = postDto.getMinPeople();
         if(postDto.getMaxPeople() != 0) maxPeople = postDto.getMaxPeople();
         if(postDto.getStatus() != null) status = postDto.getStatus();
+        if(postDto.getRegionId() != null) regionId = postDto.getRegionId();
     }
 
     public void deleted(){

@@ -50,7 +50,7 @@ public class PostController {
     }
 
 
-    // 게시글 제목/내용 변경
+    // 게시글 수정
     @PreAuthorize("hasRole('GUIDE')")
     @PutMapping("/post")
     public ResponseEntity<?> updatePost(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody PostDto postDto){
