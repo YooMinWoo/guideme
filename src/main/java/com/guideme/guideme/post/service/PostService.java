@@ -2,8 +2,9 @@ package com.guideme.guideme.post.service;
 
 import com.guideme.guideme.business.domain.Business;
 import com.guideme.guideme.business.repository.BusinessRepository;
-import com.guideme.guideme.business.service.BusinessService;
 import com.guideme.guideme.global.exception.CustomException;
+import com.guideme.guideme.like.domain.Likes;
+import com.guideme.guideme.like.repository.LikesRepository;
 import com.guideme.guideme.post.domain.*;
 import com.guideme.guideme.post.dto.*;
 import com.guideme.guideme.post.mapper.PostDetailMapper;
@@ -14,7 +15,6 @@ import com.guideme.guideme.region.domain.Region;
 import com.guideme.guideme.region.repository.RegionRepository;
 import com.guideme.guideme.reservation.domain.Reservation;
 import com.guideme.guideme.reservation.repository.ReservationRepository;
-import com.guideme.guideme.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +35,7 @@ public class PostService {
     private final ReservationRepository reservationRepository;
     private final RegionRepository regionRepository;
     private final BusinessRepository businessRepository;
+    private final LikesRepository likesRepository;
 
     public Optional<Post> findById(Long id){
         return postRepository.findById(id);
@@ -56,7 +57,7 @@ public class PostService {
     }
 
 
-    public ResponsePostDetailDto getPostDetail(Long postId, LocalDate startDate) {
+    public ResponsePostDetailDto getPostDetail(Long userId, Long postId, LocalDate startDate) {
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException("게시글이 존재하지 않습니다."));
@@ -66,6 +67,9 @@ public class PostService {
                 .orElseThrow(() -> new CustomException("존재하지 않는 지역입니다."));
         Business business = businessRepository.findByUserId(post.getUserId())
                 .orElseThrow(() -> new CustomException("존재하지 않는 사업자입니다."));
+
+        boolean likesTF = false;
+        if(userId != null) likesTF = likesRepository.findByUserIdAndPostDetailId(userId, postDetail.getId()).isPresent();
 
 
         Status status = Status.CLOSED;
@@ -86,6 +90,7 @@ public class PostService {
                 .minPeople(post.getMinPeople())
                 .maxPeople(post.getMaxPeople())
                 .availableCnt(postDetail.getAvailableCnt())
+                .likesTF(likesTF)
                 .status(status)
                 .build();
     }

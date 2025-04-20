@@ -32,6 +32,9 @@ public class ResponsePostDetailDto {
     private int minPeople;
     private int maxPeople;
     private int availableCnt;   // 이용 가능한 개수
+
+    private boolean likesTF;
+
     private Status status;
 
 }

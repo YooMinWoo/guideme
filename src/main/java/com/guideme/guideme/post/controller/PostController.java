@@ -28,16 +28,6 @@ public class PostController {
 
     private final PostService postService;
 
-//    @PreAuthorize("hasRole('GUIDE')")
-//    @PutMapping("/post")
-//    public ResponseEntity<?> updatePost(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody PostDto postDto){
-//        User user = customUserDetails.getUser();
-//        postDto.setUser_id(user.getId());
-//        postDto.setStatus(Status.OPEN);
-//        postService.createPost(postDto);
-//        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("등록 성공!", null));
-//    }
-
 
     // 게시글 등록
     @PreAuthorize("hasRole('GUIDE')")
@@ -97,9 +87,11 @@ public class PostController {
 
     // 게시글 조회
     @GetMapping("/post/{postId}/{startDate}")
-    public ResponseEntity<?> getPostDetail(@PathVariable("postId") Long postId,
+    public ResponseEntity<?> getPostDetail(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                           @PathVariable("postId") Long postId,
                                            @PathVariable("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate){
-        ResponsePostDetailDto responsePostDetailDto = postService.getPostDetail(postId, startDate);
+        Long userId = (customUserDetails != null) ? customUserDetails.getUser().getId() : null;
+        ResponsePostDetailDto responsePostDetailDto = postService.getPostDetail(userId, postId, startDate);
         return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("조회 성공!", responsePostDetailDto));
     }
 

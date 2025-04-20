@@ -9,6 +9,7 @@ import com.guideme.guideme.global.exception.UserNotFoundException;
 import com.guideme.guideme.global.exception.UserNotRegisteredException;
 import com.guideme.guideme.security.jwt.JwtUtil;
 import com.guideme.guideme.security.user.CustomUserDetails;
+import com.guideme.guideme.user.domain.Role;
 import com.guideme.guideme.user.dto.TokenDto;
 import com.guideme.guideme.user.dto.UserDto;
 import com.guideme.guideme.user.domain.User;
@@ -42,6 +43,7 @@ public class UserService {
     public User userSignup(UserDto userDto) {
         if(userRepository.findByUsername(userDto.getUsername()).isPresent()) throw new CustomException("이미 존재하는 아이디입니다.");
 //        if(userRepository.findByNameAndResidentAndRole(userDto.getName(), userDto.getResident, userDto.getRole()).isPresent()) throw new CustomException("이미 가입된 회원입니다.");
+        userDto.setRole(Role.ROLE_USER);
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User user = UserMapper.toUserEntity(userDto);
 
@@ -54,6 +56,7 @@ public class UserService {
     public User guideSignup(UserDto userDto, BusinessDto businessDto) {
         if(userRepository.findByUsername(userDto.getUsername()).isPresent()) throw new CustomException("이미 존재하는 아이디입니다.");
         if(businessService.findByRegistrationNumber(businessDto.getRegistrationNumber()).isPresent()) throw new CustomException("이미 존재하는 사업자 등록번호입니다.");
+        userDto.setRole(Role.ROLE_GUIDE);
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User user = UserMapper.toUserEntity(userDto);
         userRepository.save(user);
@@ -69,6 +72,7 @@ public class UserService {
     public User adminSignup(UserDto userDto, String adminCode) {
         if(userRepository.findByUsername(userDto.getUsername()).isPresent()) throw new CustomException("이미 존재하는 아이디입니다.");
         if(!adminCode.equals(this.adminCode)) throw new CustomException("관리자 코드가 일치하지 않습니다.");
+        userDto.setRole(Role.ROLE_ADMIN);
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User user = UserMapper.toUserEntity(userDto);
         userRepository.save(user);

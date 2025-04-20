@@ -39,21 +39,18 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> userSignup(@RequestBody SignupDto signupDto) {
-        signupDto.getUser().setRole(Role.ROLE_USER);
         userService.userSignup(signupDto.getUser());
         return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("회원가입 성공!", null));
     }
 
     @PostMapping("/guide/signup")
     public ResponseEntity<?> guideSignup(@RequestBody SignupDto signupDto) {
-        signupDto.getUser().setRole(Role.ROLE_GUIDE);
         userService.guideSignup(signupDto.getUser(), signupDto.getBusiness());
         return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("회원가입 성공!", null));
     }
 
     @PostMapping("/admin/signup")
     public ResponseEntity<?> adminSignup(@RequestBody SignupDto signupDto) {
-        signupDto.getUser().setRole(Role.ROLE_ADMIN);
         userService.adminSignup(signupDto.getUser(), signupDto.getAdminCode());
         return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("회원가입 성공!", null));
     }
