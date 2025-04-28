@@ -9,6 +9,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -59,7 +61,7 @@ public class JwtUtil {
 
     public TokenDto generateToken(User user) {
         long now = System.currentTimeMillis();
-        long accessTokenExpiration = 1000 * 60 * 30; // 30분
+        long accessTokenExpiration = 1000 * 30 * 1; // 지금은 30초로 바꿈. 테스트를 위해. 30분
         long refreshTokenExpiration = 1000 * 60 * 60 * 24; // 24시간
 
 
@@ -83,7 +85,17 @@ public class JwtUtil {
                 .signWith(secretKey)
                 .compact();
 
-        return new TokenDto(accessToken, refreshToken);
+        // ✅ 리프레시 토큰을 HttpOnly 쿠키로 설정
+        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
+                .httpOnly(true)
+                .secure(false) // HTTPS 환경에서만 사용할 경우, 로컬에서는 http이므로 false, 실서버에서는 https이므로 true
+                .path("/")
+                .maxAge(refreshTokenExpiration / 1000)
+//                .sameSite("None") // Lax, Strict, None
+                .build();
+
+        // 액세스 토큰만 클라이언트에 반환
+        return new TokenDto(accessToken, refreshCookie.toString());
     }
 
 }

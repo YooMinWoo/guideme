@@ -4,6 +4,7 @@ import com.guideme.guideme.business.domain.Business;
 import com.guideme.guideme.business.dto.BusinessDto;
 import com.guideme.guideme.business.mapper.BusinessMapper;
 import com.guideme.guideme.business.service.BusinessService;
+import com.guideme.guideme.global.dto.ApiResponse;
 import com.guideme.guideme.global.exception.CustomException;
 import com.guideme.guideme.global.exception.UserNotFoundException;
 import com.guideme.guideme.global.exception.UserNotRegisteredException;
@@ -17,6 +18,8 @@ import com.guideme.guideme.user.mapper.UserMapper;
 import com.guideme.guideme.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -89,8 +92,21 @@ public class UserService {
         if(user.isEmpty()) throw new CustomException("존재하지 않는 아이디입니다.");
         if(!passwordEncoder.matches(password, user.get().getPassword())) throw new CustomException("비밀번호가 일치하지 않습니다.");
 
+
         return jwtUtil.generateToken(user.get());
     }
 
 
+    public TokenDto refreshToken(String refreshToken) {
+        try{
+            jwtUtil.isExpired(refreshToken);
+            Authentication authentication = jwtUtil.getAuthentication(refreshToken);
+            CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+            User user = customUserDetails.getUser();
+
+            return jwtUtil.generateToken(user);
+        } catch (Exception e){
+            throw new CustomException("로그인 창으로 이동");
+        }
+    }
 }
