@@ -86,4 +86,10 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("로그인 성공!", tokenDto));
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/isLogin")
+    public ResponseEntity<?> isLogin(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("isLogin", null));
+    }
+
 }
