@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class FileDto {
 
     private Long file_id;
+    private Long post_id;
 
     private String originalFileName;  // 사용자가 올린 원본 이름
 

@@ -2,6 +2,8 @@ package com.guideme.guideme.post.service;
 
 import com.guideme.guideme.business.domain.Business;
 import com.guideme.guideme.business.repository.BusinessRepository;
+import com.guideme.guideme.files.domain.File;
+import com.guideme.guideme.files.repository.FileRepository;
 import com.guideme.guideme.global.exception.CustomException;
 import com.guideme.guideme.like.domain.Likes;
 import com.guideme.guideme.like.repository.LikesRepository;
@@ -15,12 +17,14 @@ import com.guideme.guideme.region.domain.Region;
 import com.guideme.guideme.region.repository.RegionRepository;
 import com.guideme.guideme.reservation.domain.Reservation;
 import com.guideme.guideme.reservation.repository.ReservationRepository;
+import com.guideme.guideme.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -36,6 +40,8 @@ public class PostService {
     private final RegionRepository regionRepository;
     private final BusinessRepository businessRepository;
     private final LikesRepository likesRepository;
+    private final FileUtils fileUtils;
+    private final FileRepository fileRepository;
 
     public Optional<Post> findById(Long id){
         return postRepository.findById(id);
@@ -163,5 +169,31 @@ public class PostService {
 //        PostDetail postDetail = postDetailRepository.findByPostIdAndStartDate(postDetailDto.getPostId(), postDetailDto.getStartDate())
 //                .orElseThrow(() -> new CustomException("게시글이 존재하지 않습니다."));
 
+    }
+
+    @Transactional
+    public void createPostWithImages(CreatePostDto createPostDto, MultipartFile[] files) {
+        PostDto postDto = createPostDto.getPostDto();
+        postDto.setStatus(Status.OPEN);     // post의 초기상태 = OPEN
+        regionRepository.findById(postDto.getRegionId()).orElseThrow(() -> new CustomException("존재하지 않는 지역입니다."));
+
+        List<PostDetailDto> postDetailDtoList = createPostDto.getPostDetailDtoList();
+        Post post = PostMapper.toPostEntity(postDto);
+        postRepository.save(post);
+
+        // 상세 게시글 등록
+        for(PostDetailDto postDetailDto : postDetailDtoList){
+            postDetailDto.setPostId(post.getId());
+            postDetailDto.setStatus(Status.OPEN);
+            postDetailDto.setAvailableCnt(postDetailDto.getTotalCnt());     // 초기에는 [예약 가능한 개수 = 총 개수]
+            PostDetail postDetail = PostDetailMapper.ToPostDetailEntity(postDetailDto);
+            postDetailRepository.save(postDetail);
+        }
+
+        // 게시글의 사진 업로드
+        for(MultipartFile multipartFile : files){
+            File file = fileUtils.uploadFile(multipartFile, post.getId());
+            fileRepository.save(file);
+        }
     }
 }

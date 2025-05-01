@@ -15,10 +15,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -36,6 +38,18 @@ public class PostController {
         User user = customUserDetails.getUser();
         createPostDto.getPostDto().setUserId(user.getId());
         postService.createPost(createPostDto);
+        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("등록 성공!", null));
+    }
+
+    // 게시글 등록
+    @PreAuthorize("hasRole('GUIDE')")
+    @PostMapping(value = "/post-images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> createPostWithImages(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                  @RequestPart("data") CreatePostDto createPostDto,
+                                                  @RequestPart("files") MultipartFile[] files){
+        User user = customUserDetails.getUser();
+        createPostDto.getPostDto().setUserId(user.getId());
+        postService.createPostWithImages(createPostDto, files);
         return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("등록 성공!", null));
     }
 

@@ -20,6 +20,8 @@ public class File {
     @Column(name = "file_id")
     private Long id;
 
+    private Long post_id;             // 게시물 id
+
     private String originalFileName;  // 사용자가 올린 원본 이름
 
     private String storedFileName;    // 저장된 이름 (UUID 등으로 난수화 추천)
@@ -34,7 +36,8 @@ public class File {
     @Column(updatable = false)
     private LocalDateTime createdDate; // 업로드 시간
 
-    public File(String originalFileName, String storedFileName, String filePath, Long fileSize, String contentType) {
+    public File(Long post_id, String originalFileName, String storedFileName, String filePath, Long fileSize, String contentType) {
+        this.post_id = post_id;
         this.originalFileName = originalFileName;
         this.storedFileName = storedFileName;
         this.filePath = filePath;

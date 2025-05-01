@@ -41,12 +41,12 @@ public class FileController {
 
 
     // 사진 업로드
-    @PostMapping("upload-file")
-    public ResponseEntity<?> handleMultiFileUpload(@RequestParam("files") MultipartFile[] files) {
-        fileService.uploadFile(files);
-
-        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("파일 업로드 성공!", null));
-    }
+//    @PostMapping("upload-file")
+//    public ResponseEntity<?> handleMultiFileUpload(@RequestParam("files") MultipartFile[] files) {
+//        fileService.uploadFile(files);
+//
+//        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("파일 업로드 성공!", null));
+//    }
 
     // 사진 조회
     @GetMapping("/image/{fileName}")

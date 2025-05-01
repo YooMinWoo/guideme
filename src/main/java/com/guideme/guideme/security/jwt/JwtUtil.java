@@ -61,7 +61,7 @@ public class JwtUtil {
 
     public TokenDto generateToken(User user) {
         long now = System.currentTimeMillis();
-        long accessTokenExpiration = 1000 * 10 * 1; // 지금은 10초로 바꿈. 테스트를 위해. 30분
+        long accessTokenExpiration = 1000 * 60 * 30; // 30분
         long refreshTokenExpiration = 1000 * 60 * 60 * 24; // 24시간
 
 
