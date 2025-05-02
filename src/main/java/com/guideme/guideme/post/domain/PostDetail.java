@@ -46,7 +46,7 @@ public class PostDetail {
 
     public void change(PostDetailDto postDetailDto){
         if(postDetailDto.getPricePerTeam() != 0) this.pricePerTeam = postDetailDto.getPricePerTeam();
-        if(postDetailDto.getTotalCnt() != null) {
+        if(postDetailDto.getTotalCnt() != 0) {
             int changeCnt = postDetailDto.getTotalCnt() - this.totalCnt;        // 5 -> 3 = -2 , 3 -> 5 = 2
             this.totalCnt += changeCnt;
             this.availableCnt += changeCnt;

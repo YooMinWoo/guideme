@@ -24,12 +24,12 @@ public class PostDetailDto {
     private LocalDate startDate;
     private int pricePerTeam;   // 날짜별 한 팀 당 가격
 
-    // 이거로 뭐 하려고 했더라...? 파악하기
-    private Integer totalCnt;    // 총 개수
-    private Integer availableCnt;    // 현재 예약 가능한 개수
+    private int totalCnt;    // 총 개수
+    private int availableCnt;    // 현재 예약 가능한 개수
+
     private Status status;
 
-    public PostDetailDto(Long postId, LocalDate startDate, Integer totalCnt, Integer availableCnt) {
+    public PostDetailDto(Long postId, LocalDate startDate, int totalCnt, int availableCnt) {
         this.postId = postId;
         this.startDate = startDate;
         this.totalCnt = totalCnt;

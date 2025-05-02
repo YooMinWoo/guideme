@@ -15,7 +15,7 @@ import java.util.UUID;
 @Service
 public class FileUtils {
 
-    private static final String UPLOAD_PATH = "C:\\Users\\MINU\\Desktop\\dummyFiles\\";
+    private static final String UPLOAD_PATH = "C:\\Users\\CODELINE\\Desktop\\dummyFiles\\";
 
     public File uploadFile(MultipartFile multipartFile, Long post_id){
         if (multipartFile.isEmpty()) throw new CustomException("첨부파일이 없네요잉");
