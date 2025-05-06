@@ -10,4 +10,7 @@ public class DefaultController {
     public String defaultPage(){
         return "기본 페이지입니다.";
     }
+
+    @GetMapping("/")
+    public String mainPage(){ return "guideme 메인페이지."; }
 }

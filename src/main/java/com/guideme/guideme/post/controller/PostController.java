@@ -2,10 +2,7 @@ package com.guideme.guideme.post.controller;
 
 import com.guideme.guideme.global.dto.ApiResponse;
 import com.guideme.guideme.post.domain.Status;
-import com.guideme.guideme.post.dto.CreatePostDto;
-import com.guideme.guideme.post.dto.PostDetailDto;
-import com.guideme.guideme.post.dto.PostDto;
-import com.guideme.guideme.post.dto.ResponsePostDetailDto;
+import com.guideme.guideme.post.dto.*;
 import com.guideme.guideme.post.service.PostService;
 import com.guideme.guideme.security.user.CustomUserDetails;
 import com.guideme.guideme.user.domain.User;
@@ -55,12 +52,18 @@ public class PostController {
 
 
     // 게시글 수정
+    /*
+    전체와, 들어온 것을 비교하여 없는 번호는 삭제 처리
+     */
     @PreAuthorize("hasRole('GUIDE')")
     @PutMapping("/post")
-    public ResponseEntity<?> updatePost(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody PostDto postDto){
+    public ResponseEntity<?> updatePost(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                        @RequestPart("data") UpdatePostDto updatePostDto,
+                                        @RequestPart(name = "files", required = false) MultipartFile[] files){
         User user = customUserDetails.getUser();
-        postDto.setUserId(user.getId());
-        postService.updatePost(postDto);
+        updatePostDto.setUserId(user.getId());
+        System.out.println(updatePostDto.getDeleteImgIdList());
+        postService.updatePost(updatePostDto, files);
         return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("success!", null));
     }
 

@@ -2,6 +2,7 @@ package com.guideme.guideme.post.domain;
 
 import com.guideme.guideme.global.entity.BaseEntity;
 import com.guideme.guideme.post.dto.PostDto;
+import com.guideme.guideme.post.dto.UpdatePostDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -47,17 +48,17 @@ public class Post extends BaseEntity {
 
 
 
-    public void change(PostDto postDto) {
-        if(postDto.getTitle() != null && !postDto.getTitle().isEmpty()) {
-            System.out.println("title : " + title + " \t -> " + postDto.getTitle());
-            title = postDto.getTitle();
+    public void change(UpdatePostDto updatePostDto) {
+        if(updatePostDto.getTitle() != null && !updatePostDto.getTitle().isEmpty()) {
+            System.out.println("title : " + title + " \t -> " + updatePostDto.getTitle());
+            title = updatePostDto.getTitle();
         }
 
-        if(postDto.getDescription() != null && !postDto.getDescription().isEmpty()) description = postDto.getDescription();
-        if(postDto.getMinPeople() != 0) minPeople = postDto.getMinPeople();
-        if(postDto.getMaxPeople() != 0) maxPeople = postDto.getMaxPeople();
-        if(postDto.getStatus() != null) status = postDto.getStatus();
-        if(postDto.getRegionId() != null) regionId = postDto.getRegionId();
+        if(updatePostDto.getDescription() != null && !updatePostDto.getDescription().isEmpty()) description = updatePostDto.getDescription();
+        if(updatePostDto.getMinPeople() != 0) minPeople = updatePostDto.getMinPeople();
+        if(updatePostDto.getMaxPeople() != 0) maxPeople = updatePostDto.getMaxPeople();
+        if(updatePostDto.getStatus() != null) status = updatePostDto.getStatus();
+        if(updatePostDto.getRegionId() != null) regionId = updatePostDto.getRegionId();
     }
 
     public void deleted(){

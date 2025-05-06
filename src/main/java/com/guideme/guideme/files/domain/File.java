@@ -20,7 +20,7 @@ public class File {
     @Column(name = "file_id")
     private Long id;
 
-    private Long post_id;             // 게시물 id
+    private Long postId;             // 게시물 id
 
     private String originalFileName;  // 사용자가 올린 원본 이름
 
@@ -36,8 +36,8 @@ public class File {
     @Column(updatable = false)
     private LocalDateTime createdDate; // 업로드 시간
 
-    public File(Long post_id, String originalFileName, String storedFileName, String filePath, Long fileSize, String contentType) {
-        this.post_id = post_id;
+    public File(Long postId, String originalFileName, String storedFileName, String filePath, Long fileSize, String contentType) {
+        this.postId = postId;
         this.originalFileName = originalFileName;
         this.storedFileName = storedFileName;
         this.filePath = filePath;

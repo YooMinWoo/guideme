@@ -3,6 +3,7 @@ package com.guideme.guideme.utils;
 import com.guideme.guideme.files.domain.File;
 import com.guideme.guideme.files.dto.FileDto;
 import com.guideme.guideme.global.exception.CustomException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,14 +16,18 @@ import java.util.UUID;
 @Service
 public class FileUtils {
 
-    private static final String UPLOAD_PATH = "C:\\Users\\CODELINE\\Desktop\\dummyFiles\\";
+//    private static final String UPLOAD_PATH = "C:\\Users\\CODELINE\\Desktop\\dummyFiles\\";
+//    private static final String UPLOAD_PATH = "C:\\Users\\MINU\\Desktop\\dummyFiles\\";
+
+    @Value("${server.fileLocate}")
+    private String fileLocate;
 
     public File uploadFile(MultipartFile multipartFile, Long post_id){
         if (multipartFile.isEmpty()) throw new CustomException("첨부파일이 없네요잉");
 
         try {
             // 저장할 경로 생성
-            Path uploadPath = Paths.get(UPLOAD_PATH);
+            Path uploadPath = Paths.get(fileLocate);
             if (!Files.exists(uploadPath)) Files.createDirectories(uploadPath);
 
             String originalFileName = multipartFile.getOriginalFilename();
@@ -36,7 +41,7 @@ public class FileUtils {
             fileDto.setPost_id(post_id);
             fileDto.setOriginalFileName(originalFileName);
             fileDto.setStoredFileName(storedFileName);
-            fileDto.setFilePath(UPLOAD_PATH);
+            fileDto.setFilePath(fileLocate);
             fileDto.setFileSize(fileSize);
             fileDto.setContentType(contentType);
 
@@ -54,6 +59,15 @@ public class FileUtils {
             return file;
         } catch (IOException e) {
             throw new CustomException("파일 첨부를 실패했네요잉");
+        }
+    }
+
+    public void deleteFile(File file) {
+        try {
+            Path filePath = Paths.get(file.getFilePath()).resolve(file.getStoredFileName());
+            Files.deleteIfExists(filePath);
+        } catch (IOException e) {
+            throw new CustomException("파일 삭제 중 에러 발생");
         }
     }
 }

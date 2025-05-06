@@ -12,6 +12,6 @@ import org.springframework.core.io.Resource;
 @AllArgsConstructor
 public class FileResponse {
 
-    private Resource resource;
-    private String contentType;
+    private Long fileId;
+    private String imgSrc;
 }

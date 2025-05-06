@@ -1,7 +1,6 @@
 package com.guideme.guideme.files.controller;
 
 import com.guideme.guideme.files.dto.FileDto;
-import com.guideme.guideme.files.dto.FileResponse;
 import com.guideme.guideme.files.service.FileService;
 import com.guideme.guideme.global.dto.ApiResponse;
 import com.guideme.guideme.global.exception.CustomException;
@@ -49,13 +48,13 @@ public class FileController {
 //    }
 
     // 사진 조회
-    @GetMapping("/image/{fileName}")
-    public ResponseEntity<Resource> getImage(@PathVariable("fileName") String fileName) {
-        FileResponse fileResponse = fileService.getImage(fileName);
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(fileResponse.getContentType()))
-                .body(fileResponse.getResource());
-    }
+//    @GetMapping("/image/{fileName}")
+//    public ResponseEntity<Resource> getImage(@PathVariable("fileName") String fileName) {
+//        FileResponse fileResponse = fileService.getImage(fileName);
+//
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.parseMediaType(fileResponse.getContentType()))
+//                .body(fileResponse.getResource());
+//    }
 
 }

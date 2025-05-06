@@ -13,6 +13,5 @@ public class LikesDto {
 
     private Long likesId;
 
-    private Long userId;
     private Long postDetailId;
 }

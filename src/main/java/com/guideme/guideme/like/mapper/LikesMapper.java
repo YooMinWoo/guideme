@@ -13,7 +13,6 @@ public class LikesMapper {
         for(Likes likes : likesList){
             likesDtoList.add(LikesDto.builder()
                     .likesId(likes.getId())
-                    .userId(likes.getUserId())
                     .postDetailId(likes.getPostDetailId())
                     .build());
         }

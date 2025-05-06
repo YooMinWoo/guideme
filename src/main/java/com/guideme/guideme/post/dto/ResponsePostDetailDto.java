@@ -1,6 +1,7 @@
 package com.guideme.guideme.post.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.guideme.guideme.files.dto.FileResponse;
 import com.guideme.guideme.post.domain.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
@@ -19,6 +21,8 @@ public class ResponsePostDetailDto {
 
     private String title;
     private String description;
+
+    private List<FileResponse> imgResponse;
 
     private String country;
     private String city;

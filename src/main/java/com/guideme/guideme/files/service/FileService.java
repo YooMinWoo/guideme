@@ -1,7 +1,6 @@
 package com.guideme.guideme.files.service;
 
 import com.guideme.guideme.files.domain.File;
-import com.guideme.guideme.files.dto.FileResponse;
 import com.guideme.guideme.files.repository.FileRepository;
 import com.guideme.guideme.global.exception.CustomException;
 import com.guideme.guideme.utils.FileUtils;
@@ -21,23 +20,23 @@ public class FileService {
     private final FileRepository fileRepository;
     private final FileUtils fileUtils;
 
-    public FileResponse getImage(String fileName){
-        try{
-            File file = fileRepository.findByStoredFileName(fileName)
-                    .orElseThrow(() -> new CustomException("파일 없음"));
-
-            Path path = Paths.get(file.getFilePath(), file.getStoredFileName());
-            Resource resource = new UrlResource(path.toUri());
-            if (!resource.exists()) throw new CustomException("파일이 존재하지 않습니다");
-            return FileResponse.builder()
-                    .resource(resource)
-                    .contentType(file.getContentType())
-                    .build();
-        } catch (Exception e){
-            throw new CustomException("파일 조회 중 에러 발생");
-        }
-
-    }
+//    public FileResponse getImage(String fileName){
+//        try{
+//            File file = fileRepository.findByStoredFileName(fileName)
+//                    .orElseThrow(() -> new CustomException("파일 없음"));
+//
+//            Path path = Paths.get(file.getFilePath(), file.getStoredFileName());
+//            Resource resource = new UrlResource(path.toUri());
+//            if (!resource.exists()) throw new CustomException("파일이 존재하지 않습니다");
+//            return FileResponse.builder()
+//                    .resource(resource)
+//                    .contentType(file.getContentType())
+//                    .build();
+//        } catch (Exception e){
+//            throw new CustomException("파일 조회 중 에러 발생");
+//        }
+//
+//    }
 
 //    @Transactional
 //    public void uploadFile(MultipartFile[] files){

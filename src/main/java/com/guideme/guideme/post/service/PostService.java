@@ -3,9 +3,9 @@ package com.guideme.guideme.post.service;
 import com.guideme.guideme.business.domain.Business;
 import com.guideme.guideme.business.repository.BusinessRepository;
 import com.guideme.guideme.files.domain.File;
+import com.guideme.guideme.files.dto.FileResponse;
 import com.guideme.guideme.files.repository.FileRepository;
 import com.guideme.guideme.global.exception.CustomException;
-import com.guideme.guideme.like.domain.Likes;
 import com.guideme.guideme.like.repository.LikesRepository;
 import com.guideme.guideme.post.domain.*;
 import com.guideme.guideme.post.dto.*;
@@ -19,6 +19,7 @@ import com.guideme.guideme.reservation.domain.Reservation;
 import com.guideme.guideme.reservation.repository.ReservationRepository;
 import com.guideme.guideme.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,12 +28,19 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
+
+    @Value("${server.url}")
+    private String serverUrl;
+
+    @Value("${server.fileSrc}")
+    private String fileSrc;
 
     private final PostRepository postRepository;
     private final PostDetailRepository postDetailRepository;
@@ -73,6 +81,17 @@ public class PostService {
                 .orElseThrow(() -> new CustomException("존재하지 않는 지역입니다."));
         Business business = businessRepository.findByUserId(post.getUserId())
                 .orElseThrow(() -> new CustomException("존재하지 않는 사업자입니다."));
+        List<File> fileList = fileRepository.findByPostId(post.getId());
+
+        List<FileResponse> imgResponse = new ArrayList<FileResponse>();
+        for(File img : fileList){
+            FileResponse fileResponse = new FileResponse();
+            fileResponse.setFileId(img.getId());
+            fileResponse.setImgSrc(serverUrl + fileSrc + img.getStoredFileName());
+
+            imgResponse.add(fileResponse);
+        }
+
 
         boolean likesTF = false;
         if(userId != null) likesTF = likesRepository.findByUserIdAndPostDetailId(userId, postDetail.getId()).isPresent();
@@ -85,6 +104,7 @@ public class PostService {
         return ResponsePostDetailDto.builder()
                 .postDetailId(postDetail.getId())
                 .title(post.getTitle())
+                .imgResponse(imgResponse)
                 .country(region.getCountry())
                 .city(region.getCity())
                 .tradeName(business.getTradeName())
@@ -119,15 +139,33 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(PostDto postDto){
-        Post post = postRepository.findById(postDto.getPostId())
+    public void updatePost(UpdatePostDto updatePostDto, MultipartFile[] files) {
+        Post post = postRepository.findById(updatePostDto.getPostId())
                 .orElseThrow(() -> new CustomException("없는 게시물입니다."));
-        if(post.getUserId() != postDto.getUserId()) throw new CustomException("회원정보가 일치하지 않습니다.");
-        if(postDto.getRegionId() != null){
-            regionRepository.findById(postDto.getRegionId())
+        if(post.getUserId() != updatePostDto.getUserId()) throw new CustomException("회원정보가 일치하지 않습니다.");
+        if(updatePostDto.getRegionId() != null){
+            regionRepository.findById(updatePostDto.getRegionId())
                     .orElseThrow(() -> new CustomException("없는 지역입니다."));
         }
-        post.change(postDto);
+
+        // 삭제할 이미지 id 값을 받아서, db에서 삭제 및 폴더에서 사진 삭제
+        if(updatePostDto.getDeleteImgIdList() != null && !updatePostDto.getDeleteImgIdList().isEmpty()){
+            for (Long fileId : updatePostDto.getDeleteImgIdList()) {
+                File file = fileRepository.findById(fileId).orElseThrow(() -> new CustomException("없는 파일은 삭제할 수 없습니다."));
+                fileUtils.deleteFile(file);
+                fileRepository.delete(file);
+            }
+        }
+
+        // 추가한 이미지 파일이 있으면, db 추가 및 폴더에 사진 업로드
+        if(files.length > 0){
+            for(MultipartFile multipartFile : files){
+                File file = fileUtils.uploadFile(multipartFile, post.getId());
+                fileRepository.save(file);
+            }
+        }
+
+        post.change(updatePostDto);
     }
 
     @Transactional
