@@ -25,10 +25,10 @@ server:
   port: 8080
   fileSrc: /images/
   url: http://localhost:8080
-  fileLocate: C:/Users/MINU/Desktop/dummyFiles/
-#  fileLocate: C:/Users/CODELINE/Desktop/dummyFiles/
-  uriFileLocate: file:///C:/Users/MINU/Desktop/dummyFiles/
-#  UrifileLocate: file:///C:/Users/CODELINE/Desktop/dummyFiles/
+#  fileLocate: C:/Users/MINU/Desktop/dummyFiles/
+  fileLocate: C:/Users/CODELINE/Desktop/dummyFiles/
+#  uriFileLocate: file:///C:/Users/MINU/Desktop/dummyFiles/
+  uriFileLocate: file:///C:/Users/CODELINE/Desktop/dummyFiles/
 
 
 

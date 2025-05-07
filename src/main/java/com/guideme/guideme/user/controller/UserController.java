@@ -11,6 +11,7 @@ import com.guideme.guideme.user.dto.SignupDto;
 import com.guideme.guideme.user.dto.UserDto;
 import com.guideme.guideme.user.mapper.UserMapper;
 import com.guideme.guideme.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -46,6 +47,7 @@ public class UserController {
     }
 
     @PostMapping("/signup")
+    @Operation(summary = "업체 회원가입", description = "업체 측에서 회원가입 할 때 사용하는 API")
     public ResponseEntity<?> userSignup(@RequestBody SignupDto signupDto) {
         userService.userSignup(signupDto.getUser());
         return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("회원가입 성공!", null));

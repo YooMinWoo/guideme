@@ -6,6 +6,7 @@ import com.guideme.guideme.post.dto.*;
 import com.guideme.guideme.post.service.PostService;
 import com.guideme.guideme.security.user.CustomUserDetails;
 import com.guideme.guideme.user.domain.User;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,24 +24,25 @@ import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Post Controller", description = "가이드 게시글 관련 컨트롤러입니다.")
 public class PostController {
 
     private final PostService postService;
 
 
     // 게시글 등록
-    @PreAuthorize("hasRole('GUIDE')")
-    @PostMapping("/post")
-    public ResponseEntity<?> createPost(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody CreatePostDto createPostDto){
-        User user = customUserDetails.getUser();
-        createPostDto.getPostDto().setUserId(user.getId());
-        postService.createPost(createPostDto);
-        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("등록 성공!", null));
-    }
+//    @PreAuthorize("hasRole('GUIDE')")
+//    @PostMapping("/post")
+//    public ResponseEntity<?> createPost(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody CreatePostDto createPostDto){
+//        User user = customUserDetails.getUser();
+//        createPostDto.getPostDto().setUserId(user.getId());
+//        postService.createPost(createPostDto);
+//        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("등록 성공!", null));
+//    }
 
     // 게시글 등록
     @PreAuthorize("hasRole('GUIDE')")
-    @PostMapping(value = "/post-images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createPostWithImages(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                   @RequestPart("data") CreatePostDto createPostDto,
                                                   @RequestPart("files") MultipartFile[] files){
@@ -52,11 +54,8 @@ public class PostController {
 
 
     // 게시글 수정
-    /*
-    전체와, 들어온 것을 비교하여 없는 번호는 삭제 처리
-     */
     @PreAuthorize("hasRole('GUIDE')")
-    @PutMapping("/post")
+    @PutMapping(value = "/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updatePost(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                         @RequestPart("data") UpdatePostDto updatePostDto,
                                         @RequestPart(name = "files", required = false) MultipartFile[] files){

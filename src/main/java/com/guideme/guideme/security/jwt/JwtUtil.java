@@ -95,7 +95,7 @@ public class JwtUtil {
                 .build();
 
         // 액세스 토큰만 클라이언트에 반환
-        return new TokenDto(accessToken, refreshCookie.toString());
+        return new TokenDto(accessToken, refreshToken);
     }
 
 }
