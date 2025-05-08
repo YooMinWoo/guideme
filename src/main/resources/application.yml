@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/guideme?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: root
-    password: localhost
+    url: jdbc:mysql://your_url
+    username: your_username
+    password: your_password
 
   jpa:
     hibernate:
@@ -14,7 +14,7 @@ spring:
         format_sql: true
 
   jwt:
-    secret: asdfasdfasdfasdfasdfasdfqwqweqwerraasdfergghrqfqegrghs
+    secret: your_jwt
 
   servlet:
     multipart:
@@ -22,13 +22,13 @@ spring:
       max-request-size: 10MB
 
 server:
-  port: 8080
-  fileSrc: /images/
-  url: http://localhost:8080
-  #  fileLocate: C:/Users/MINU/Desktop/dummyFiles/
-  fileLocate: C:/Users/CODELINE/Desktop/dummyFiles/
-  #  uriFileLocate: file:///C:/Users/MINU/Desktop/dummyFiles/
-  uriFileLocate: file:///C:/Users/CODELINE/Desktop/dummyFiles/
+  port: your_port
+  fileSrc: your_src
+  url: http://your_url
+  fileLocate: your_fileLocate
+  uriFileLocate: file:///your_uriFileLocate
+
+
 
 
 
