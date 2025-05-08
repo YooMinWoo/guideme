@@ -6,6 +6,7 @@ import com.guideme.guideme.post.dto.*;
 import com.guideme.guideme.post.service.PostService;
 import com.guideme.guideme.security.user.CustomUserDetails;
 import com.guideme.guideme.user.domain.User;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,6 +31,7 @@ public class PostController {
     private final PostService postService;
 
     // 게시글 등록
+    @Operation(summary = "게시글 등록", description = "게시글을 등록하는 api입니다. (가이드 권한만 접근 가능)")
     @PreAuthorize("hasRole('GUIDE')")
     @PostMapping(value = "/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createPostWithImages(@AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -43,6 +45,7 @@ public class PostController {
 
 
     // 게시글 수정
+    @Operation(summary = "게시글 수정", description = "게시글을 수정하는 api입니다. (가이드, 작성자 본인만 접근 가능)")
     @PreAuthorize("hasRole('GUIDE')")
     @PutMapping(value = "/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updatePost(@AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -55,6 +58,7 @@ public class PostController {
     }
 
     // 게시글 삭제
+    @Operation(summary = "게시글 삭제", description = "게시글을 삭제하는 api입니다. (가이드, 작성자 본인만 접근 가능)")
     @PreAuthorize("hasRole('GUIDE')")
     @DeleteMapping("/post/{postId}")
     public ResponseEntity<?> deletePost(@AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -65,6 +69,10 @@ public class PostController {
     }
 
     // 게시글 특정 날짜 가격 등록 or 수정
+    @Operation(
+            summary = "게시글 특정 날짜 가격 등록 또는 수정",
+            description = "게시글에 특정 날짜에 대한 가격 정보를 등록 또는 수정하는 API입니다. (가이드, 작성자 본인만 접근 가능)"
+    )
     @PreAuthorize("hasRole('GUIDE')")
     @PutMapping("/post/{postId}/{startDate}")
     public ResponseEntity<?> postDetail(@PathVariable("postId") Long postId,
@@ -79,6 +87,10 @@ public class PostController {
     }
 
     // PostDetail 삭제
+    @Operation(
+            summary = "게시글 특정 날짜 가격 삭제",
+            description = "게시글에 설정된 특정 날짜 가격 정보를 삭제하는 API입니다. (가이드, 작성자 본인만 접근 가능)"
+    )
     @PreAuthorize("hasRole('GUIDE')")
     @DeleteMapping("/post/{postId}/{startDate}")
     public ResponseEntity<?> deletePostDetail(@PathVariable("postId") Long postId,
@@ -90,6 +102,10 @@ public class PostController {
     }
 
     // 게시글 조회
+    @Operation(
+            summary = "게시글 조회",
+            description = "게시글 상세 정보를 조회하는 API입니다."
+    )
     @GetMapping("/post/{postId}/{startDate}")
     public ResponseEntity<?> getPostDetail(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                            @PathVariable("postId") Long postId,
