@@ -5,9 +5,12 @@ spring:
     username: your_username
     password: your_password
 
-  jpa:
+    jpa:
     hibernate:
-@@ -14,24 +14,26 @@ spring:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
         format_sql: true
 
   jwt:
