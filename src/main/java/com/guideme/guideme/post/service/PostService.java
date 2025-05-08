@@ -152,6 +152,7 @@ public class PostService {
         if(updatePostDto.getDeleteImgIdList() != null && !updatePostDto.getDeleteImgIdList().isEmpty()){
             for (Long fileId : updatePostDto.getDeleteImgIdList()) {
                 File file = fileRepository.findById(fileId).orElseThrow(() -> new CustomException("없는 파일은 삭제할 수 없습니다."));
+                if(file.getPostId() != updatePostDto.getPostId()) throw new CustomException("파일 수정에 오류가 발생했습니다.");
                 fileUtils.deleteFile(file);
                 fileRepository.delete(file);
             }

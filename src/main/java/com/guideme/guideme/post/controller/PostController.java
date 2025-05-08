@@ -29,17 +29,6 @@ public class PostController {
 
     private final PostService postService;
 
-
-    // 게시글 등록
-//    @PreAuthorize("hasRole('GUIDE')")
-//    @PostMapping("/post")
-//    public ResponseEntity<?> createPost(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody CreatePostDto createPostDto){
-//        User user = customUserDetails.getUser();
-//        createPostDto.getPostDto().setUserId(user.getId());
-//        postService.createPost(createPostDto);
-//        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("등록 성공!", null));
-//    }
-
     // 게시글 등록
     @PreAuthorize("hasRole('GUIDE')")
     @PostMapping(value = "/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -61,7 +50,6 @@ public class PostController {
                                         @RequestPart(name = "files", required = false) MultipartFile[] files){
         User user = customUserDetails.getUser();
         updatePostDto.setUserId(user.getId());
-        System.out.println(updatePostDto.getDeleteImgIdList());
         postService.updatePost(updatePostDto, files);
         return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResponse.success("success!", null));
     }
